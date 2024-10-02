@@ -1,9 +1,9 @@
 package com.tecno.corralito.controllers;
 
 
-import com.tecno.corralito.models.dto.AuthCreateUserRequest;
-import com.tecno.corralito.models.dto.AuthLoginRequest;
-import com.tecno.corralito.models.dto.AuthResponse;
+import com.tecno.corralito.models.dto.authDTO.AuthCreateUserRequest;
+import com.tecno.corralito.models.dto.authDTO.AuthLoginRequest;
+import com.tecno.corralito.models.dto.authDTO.AuthResponse;
 import com.tecno.corralito.services.impl.UserDetailServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,17 +1,19 @@
 package com.tecno.corralito.services.impl;
 
-
-import com.tecno.corralito.models.dto.AuthCreateUserRequest;
-import com.tecno.corralito.models.dto.AuthLoginRequest;
-import com.tecno.corralito.models.dto.AuthResponse;
-import com.tecno.corralito.models.entities.cuenta.Cuenta;
+import com.tecno.corralito.models.dto.authDTO.AuthCreateTuristaRequest;
+import com.tecno.corralito.models.dto.authDTO.AuthLoginRequest;
+import com.tecno.corralito.models.dto.authDTO.AuthResponse;
+import com.tecno.corralito.models.dto.authDTO.NacionalidadRequest;
+import com.tecno.corralito.models.entities.enums.RoleEnum;
 import com.tecno.corralito.models.entities.tiposUsuarios.Turista;
 import com.tecno.corralito.models.entities.usuario.Nacionalidad;
 import com.tecno.corralito.models.entities.usuario.RoleEntity;
-import com.tecno.corralito.models.entities.enums.RoleEnum;
 import com.tecno.corralito.models.entities.usuario.UserEntity;
+import com.tecno.corralito.models.repositories.tiposUsuarios.TuristaRepository;
+import com.tecno.corralito.models.repositories.usuario.NacionalidadRepository;
 import com.tecno.corralito.models.repositories.usuario.RoleRepository;
 import com.tecno.corralito.models.repositories.usuario.UserRepository;
+import com.tecno.corralito.services.IAuthService;
 import com.tecno.corralito.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,17 +24,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.*;
-import java.util.stream.Collectors;
 
-@Service
-public class UserDetailServiceImpl implements UserDetailsService {
+public class AuthServiceImpl implements IAuthService {
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -44,7 +41,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
+    private TuristaRepository turistaRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private NacionalidadRepository nacionalidadRepository;
 
 
     @Override
@@ -90,7 +93,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     public Authentication authenticate(String correo, String password) {
-        UserDetails userDetails = this.loadUserByUsername(correo);
+        UserDetails userDetails = this.loadUserByCorreo(correo);
 
         if (userDetails == null) {
             throw new BadCredentialsException("Correo o contraseña inválidos");
@@ -104,9 +107,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public AuthResponse registerTurista(AuthCreateTuristaRequest createTuristaRequest) {
-        String correo = createTuristaRequest.correo();
-        String password = createTuristaRequest.password();
+    public AuthResponse registerTurista(AuthCreateTuristaRequest authCreateTuristaRequest) {
+        String correo = authCreateTuristaRequest.correo();
+        String password = authCreateTuristaRequest.password();
 
         // Verificar si el correo ya está registrado
         if (userRepository.findByCorreo(correo).isPresent()) {
@@ -131,23 +134,29 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .build();
 
         // Manejo de la nacionalidad
-        Nacionalidad nacionalidad = createTuristaRequest.nacionalidad();
-        Optional<Nacionalidad> existingNacionalidad = nacionalidadRepository.findByDescripcion(nacionalidad.getDescripcion());
+        NacionalidadRequest nacionalidadRequest = authCreateTuristaRequest.nacionalidad();
+
+        // Buscar la nacionalidad por su descripción en la base de datos
+        Optional<Nacionalidad> existingNacionalidad = nacionalidadRepository.findByDescripcion(nacionalidadRequest.descripcion());
+
+        Nacionalidad nacionalidad;
+
         if (existingNacionalidad.isPresent()) {
             nacionalidad = existingNacionalidad.get(); // Asignar la nacionalidad existente
         } else {
             throw new IllegalArgumentException("Nacionalidad no encontrada.");
         }
 
-        // Crear la entidad Turista
+        // Asignar la nacionalidad al turista
         Turista turista = Turista.builder()
-                .userEntity(userEntity) // Asignar el UserEntity recién creado
-                .nacionalidad(nacionalidad)
-                .nombre(createTuristaRequest.nombre())
-                .apellidos(createTuristaRequest.apellidos())
-                .genero(createTuristaRequest.genero())
-                .telefono(createTuristaRequest.telefono())
+                .nombre(authCreateTuristaRequest.nombre())
+                .apellidos(authCreateTuristaRequest.apellidos())
+                .telefono(authCreateTuristaRequest.telefono())
+                .genero(authCreateTuristaRequest.genero())
+                .nacionalidad(nacionalidad) // Asignar la nacionalidad al turista
+                .userEntity(userEntity) // Asignar la entidad usuario creada previamente
                 .build();
+
 
         // Guardar el turista (esto guardará también al usuario debido a la relación de cascada)
         turistaRepository.save(turista);

@@ -2,6 +2,7 @@ package com.tecno.corralito.security;
 
 
 import com.tecno.corralito.security.filter.JwtTokenValidator;
+import com.tecno.corralito.services.impl.AuthServiceImpl;
 import com.tecno.corralito.services.impl.UserDetailServiceImpl;
 import com.tecno.corralito.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailServiceImpl userDetailService) {
+    public AuthenticationProvider authenticationProvider(AuthServiceImpl authService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailService);
