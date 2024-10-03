@@ -1,8 +1,8 @@
 package com.tecno.corralito.models.repositories.usuario;
 
 
-import com.tecno.corralito.models.entities.usuario.RoleEntity;
 import com.tecno.corralito.models.entities.enums.RoleEnum;
+import com.tecno.corralito.models.entities.usuario.RoleEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

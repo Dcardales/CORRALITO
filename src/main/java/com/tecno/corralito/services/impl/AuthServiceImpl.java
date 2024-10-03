@@ -3,38 +3,47 @@ package com.tecno.corralito.services.impl;
 import com.tecno.corralito.models.dto.authDTO.AuthCreateTuristaRequest;
 import com.tecno.corralito.models.dto.authDTO.AuthLoginRequest;
 import com.tecno.corralito.models.dto.authDTO.AuthResponse;
-import com.tecno.corralito.models.dto.authDTO.NacionalidadRequest;
 import com.tecno.corralito.models.entities.enums.RoleEnum;
 import com.tecno.corralito.models.entities.tiposUsuarios.Turista;
 import com.tecno.corralito.models.entities.usuario.Nacionalidad;
 import com.tecno.corralito.models.entities.usuario.RoleEntity;
 import com.tecno.corralito.models.entities.usuario.UserEntity;
 import com.tecno.corralito.models.repositories.tiposUsuarios.TuristaRepository;
-import com.tecno.corralito.models.repositories.usuario.NacionalidadRepository;
 import com.tecno.corralito.models.repositories.usuario.RoleRepository;
 import com.tecno.corralito.models.repositories.usuario.UserRepository;
 import com.tecno.corralito.services.IAuthService;
+import com.tecno.corralito.services.IJwtService;
+import com.tecno.corralito.services.INacionalidadService;
+import com.tecno.corralito.services.IRoleService;
 import com.tecno.corralito.util.JwtUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-public class AuthServiceImpl implements IAuthService {
+@Service
+public class AuthServiceImpl implements IAuthService, UserDetailsService {
 
     @Autowired
     private JwtUtils jwtUtils;
 
     @Autowired
+    @Lazy
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -47,7 +56,16 @@ public class AuthServiceImpl implements IAuthService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private NacionalidadRepository nacionalidadRepository;
+    private INacionalidadService nacionalidadService;
+
+    @Autowired
+    private IJwtService jwtService;
+
+    @Autowired
+    private IRoleService roleService;
+
+    @Autowired
+    private UserValidationService userValidationService;
 
 
     @Override
@@ -80,13 +98,13 @@ public class AuthServiceImpl implements IAuthService {
 
 
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest) {
-
         String correo = authLoginRequest.correo();
         String password = authLoginRequest.password();
 
         Authentication authentication = this.authenticate(correo, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // Aquí asegúrate de utilizar `authentication` que es de tipo `UsernamePasswordAuthenticationToken`
         String accessToken = jwtUtils.createToken(authentication);
         AuthResponse authResponse = new AuthResponse(correo, "Inicio de sesión exitoso", accessToken, true);
         return authResponse;
@@ -103,80 +121,69 @@ public class AuthServiceImpl implements IAuthService {
             throw new BadCredentialsException("Contraseña incorrecta");
         }
 
-        return new UsernamePasswordAuthenticationToken(correo, password, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
 
+
     @Override
+    @Transactional // Manejo de transacciones
     public AuthResponse registerTurista(AuthCreateTuristaRequest authCreateTuristaRequest) {
         String correo = authCreateTuristaRequest.correo();
         String password = authCreateTuristaRequest.password();
 
         // Verificar si el correo ya está registrado
-        if (userRepository.findByCorreo(correo).isPresent()) {
-            throw new IllegalArgumentException("El correo ya está registrado. Por favor, elija otro.");
-        }
+        userValidationService.validateUniqueCorreo(correo);
 
         // Asignar el rol de TURISTA (rol por defecto)
-        RoleEntity turistaRole = roleRepository.findByRoleEnum(RoleEnum.turista)
-                .orElseThrow(() -> new IllegalArgumentException("Default role USER not found."));
+        RoleEntity turistaRole = roleService.getRoleByEnum(RoleEnum.turista);
         Set<RoleEntity> roleEntityList = new HashSet<>();
         roleEntityList.add(turistaRole);
 
         // Crear la entidad Usuario asociada al Turista
-        UserEntity userEntity = UserEntity.builder()
-                .correo(correo)
-                .contrasena(passwordEncoder.encode(password))
-                .roles(roleEntityList)
-                .isEnabled(true) // Usuario habilitado
-                .accountNoExpired(true)
-                .accountNoLocked(true)
-                .credentialNoExpired(true)
-                .build();
+        UserEntity userEntity = createUserEntity(correo, password, roleEntityList);
 
         // Manejo de la nacionalidad
-        NacionalidadRequest nacionalidadRequest = authCreateTuristaRequest.nacionalidad();
+        Nacionalidad nacionalidad = nacionalidadService.getNacionalidadByDescripcion(authCreateTuristaRequest.nacionalidad().descripcion());
 
-        // Buscar la nacionalidad por su descripción en la base de datos
-        Optional<Nacionalidad> existingNacionalidad = nacionalidadRepository.findByDescripcion(nacionalidadRequest.descripcion());
-
-        Nacionalidad nacionalidad;
-
-        if (existingNacionalidad.isPresent()) {
-            nacionalidad = existingNacionalidad.get(); // Asignar la nacionalidad existente
-        } else {
-            throw new IllegalArgumentException("Nacionalidad no encontrada.");
-        }
 
         // Asignar la nacionalidad al turista
-        Turista turista = Turista.builder()
-                .nombre(authCreateTuristaRequest.nombre())
-                .apellidos(authCreateTuristaRequest.apellidos())
-                .telefono(authCreateTuristaRequest.telefono())
-                .genero(authCreateTuristaRequest.genero())
-                .nacionalidad(nacionalidad) // Asignar la nacionalidad al turista
-                .userEntity(userEntity) // Asignar la entidad usuario creada previamente
-                .build();
-
+        Turista turista = createTurista(authCreateTuristaRequest, nacionalidad, userEntity);
 
         // Guardar el turista (esto guardará también al usuario debido a la relación de cascada)
         turistaRepository.save(turista);
 
         // Generar token JWT
-        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        userEntity.getRoles().forEach(role ->
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleEnum().name()))
-        );
-
-        userEntity.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
-                .forEach(permission ->
-                        authorities.add(new SimpleGrantedAuthority(permission.getName()))
-                );
-
-        SecurityContext securityContextHolder = SecurityContextHolder.getContext();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userEntity, null, authorities);
-        String accessToken = jwtUtils.createToken(authentication);
+        String accessToken = jwtService.createToken((Authentication) userEntity);
 
         return new AuthResponse(correo, "Turista creado exitosamente", accessToken, true);
+    }
+
+    private UserEntity createUserEntity(String correo, String password, Set<RoleEntity> roles) {
+        return UserEntity.builder()
+                .correo(correo)
+                .contrasena(passwordEncoder.encode(password))
+                .roles(roles)
+                .isEnabled(true)
+                .accountNoExpired(true)
+                .accountNoLocked(true)
+                .credentialNoExpired(true)
+                .build();
+    }
+
+    private Turista createTurista(AuthCreateTuristaRequest request, Nacionalidad nacionalidad, UserEntity userEntity) {
+        return Turista.builder()
+                .nombre(request.nombre())
+                .apellidos(request.apellidos())
+                .telefono(request.telefono())
+                .genero(request.genero())
+                .nacionalidad(nacionalidad)
+                .userEntity(userEntity)
+                .build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
 

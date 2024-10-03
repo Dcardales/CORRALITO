@@ -1,9 +1,11 @@
 package com.tecno.corralito;
 
+import com.tecno.corralito.models.entities.enums.Estado;
+import com.tecno.corralito.models.entities.enums.RoleEnum;
 import com.tecno.corralito.models.entities.usuario.PermissionEntity;
 import com.tecno.corralito.models.entities.usuario.RoleEntity;
-import com.tecno.corralito.models.entities.enums.RoleEnum;
 import com.tecno.corralito.models.entities.usuario.UserEntity;
+import com.tecno.corralito.models.repositories.usuario.RoleRepository;
 import com.tecno.corralito.models.repositories.usuario.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,8 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-
 
 import java.util.List;
 import java.util.Set;
@@ -24,23 +24,24 @@ public class CorralitoApplication {
         SpringApplication.run(CorralitoApplication.class, args);
     }
 
-
     @Component
     public class DataInitializer {
 
         private final UserRepository userRepository;
         private final PasswordEncoder passwordEncoder;
+        private final RoleRepository roleRepository;
 
         // Constructor para inyectar dependencias
-        public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
             this.userRepository = userRepository;
             this.passwordEncoder = passwordEncoder;
+            this.roleRepository = roleRepository;
         }
 
         @Bean
         CommandLineRunner init() {
             return args -> {
-                /* Crear PERMISOS */
+                // Crear PERMISOS
                 PermissionEntity consultarPermission = PermissionEntity.builder()
                         .name("CONSULTAR")
                         .build();
@@ -49,55 +50,19 @@ public class CorralitoApplication {
                         .name("TRANSFERIR")
                         .build();
 
-                PermissionEntity viewAccountPermission = PermissionEntity.builder()
-                        .name("VIEW_ACCOUNT")
+                // Guardar permisos en la base de datos
+                // Asegúrate de que tienes un PermissionRepository para guardarlos
+                // permissionRepository.save(consultarPermission);
+                // permissionRepository.save(transferirPermission);
+
+                // Crear ROLES
+                RoleEntity roleTurista = RoleEntity.builder()
+                        .roleEnum(RoleEnum.turista)
+                        .permissionList(Set.of(consultarPermission, transferirPermission))
                         .build();
 
-                PermissionEntity viewTransactionPermission = PermissionEntity.builder()
-                        .name("VIEW_TRANSACTION")
-                        .build();
-
-                /* Crear ROLES */
-                RoleEntity roleAdmin = RoleEntity.builder()
-                        .roleEnum(RoleEnum.ADMIN)
-                        .permissionList(Set.of(
-                                consultarPermission,
-                                viewAccountPermission,
-                                viewTransactionPermission
-                        ))
-                        .build();
-
-                RoleEntity roleUser = RoleEntity.builder()
-                        .roleEnum(RoleEnum.USER)
-                        .permissionList(Set.of(
-                                consultarPermission,
-                                transferirPermission,
-                                viewTransactionPermission
-                        ))
-                        .build();
-
-                /* CREAR USUARIOS */
-                UserEntity userSantiago = UserEntity.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin")) // Codificar la contraseña
-                        .isEnabled(true)
-                        .accountNoExpired(true)
-                        .accountNoLocked(true)
-                        .credentialNoExpired(true)
-                        .roles(Set.of(roleAdmin))
-                        .build();
-
-                UserEntity userDaniel = UserEntity.builder()
-                        .username("prueba")
-                        .password(passwordEncoder.encode("12345")) // Codificar la contraseña
-                        .isEnabled(true)
-                        .accountNoExpired(true)
-                        .accountNoLocked(true)
-                        .credentialNoExpired(true)
-                        .roles(Set.of(roleUser))
-                        .build();
-
-                userRepository.saveAll(List.of(userSantiago, userDaniel));
+                // Guardar rol en la base de datos
+                roleRepository.save(roleTurista);
             };
         }
     }

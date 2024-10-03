@@ -42,7 +42,7 @@ public class Turista implements Serializable {
     @Enumerated(EnumType.STRING)
     private Genero genero;
 
-    @Column(name = "telefono", length = 15,nullable = false)
+    @Column(name = "telefono", length = 15, nullable = false)
     private String telefono;
 
     @OneToOne

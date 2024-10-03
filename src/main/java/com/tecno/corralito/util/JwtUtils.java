@@ -4,7 +4,9 @@ package com.tecno.corralito.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,39 +27,44 @@ public class JwtUtils {
     @Value("${security.jwt.user.generator}")
     private String userGenerator;
 
-    public String createToken(Authentication authentication) {
-        Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
+    @Value("${security.jwt.token.expiration}")
+    private long tokenExpirationMs;
 
+    private Algorithm getAlgorithm() {
+        return Algorithm.HMAC256(this.privateKey);
+    }
+
+    public String createToken(Authentication authentication) {
         String username = authentication.getPrincipal().toString();
         String authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String jwtToken = JWT.create()
+        return JWT.create()
                 .withIssuer(this.userGenerator)
                 .withSubject(username)
                 .withClaim("authorities", authorities)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + tokenExpirationMs))
                 .withJWTId(UUID.randomUUID().toString())
                 .withNotBefore(new Date(System.currentTimeMillis()))
-                .sign(algorithm);
-        return jwtToken;
+                .sign(getAlgorithm());
     }
 
     public DecodedJWT validateToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
-
-            JWTVerifier verifier = JWT.require(algorithm)
+            JWTVerifier verifier = JWT.require(getAlgorithm())
                     .withIssuer(this.userGenerator)
                     .build();
 
-            DecodedJWT decodedJWT = verifier.verify(token);
-            return decodedJWT;
-        } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException("Token invalid, not Authorized");
+            return verifier.verify(token);
+        } catch (TokenExpiredException e) {
+            throw new JWTVerificationException("El token ha expirado.");
+        } catch (JWTDecodeException e) {
+            throw new JWTVerificationException("El token está mal formado.");
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException("Token no autorizado.");
         }
     }
 

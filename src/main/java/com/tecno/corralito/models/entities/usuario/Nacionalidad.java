@@ -25,4 +25,8 @@ public class Nacionalidad implements Serializable {
     @Column(name = "descripcion")
     private String descripcion;
 
+    public Nacionalidad(String codigo, String descripcion) {
+        this.codigo = codigo;
+        this.descripcion = descripcion;
+    }
 }
