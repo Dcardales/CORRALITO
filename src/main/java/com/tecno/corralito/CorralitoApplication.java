@@ -1,18 +1,17 @@
-package com.tecno.corralito;
+package com.tecno.ctgbank;
 
-import com.tecno.corralito.models.entities.usuario.PermissionEntity;
-import com.tecno.corralito.models.entities.usuario.RoleEntity;
-import com.tecno.corralito.models.entities.enums.RoleEnum;
-import com.tecno.corralito.models.entities.usuario.UserEntity;
-import com.tecno.corralito.models.repositories.usuario.UserRepository;
+import com.tecno.ctgbank.models.entity.enums.Estado;
+import com.tecno.ctgbank.models.entity.usuario.PermissionEntity;
+import com.tecno.ctgbank.models.entity.usuario.RoleEntity;
+import com.tecno.ctgbank.models.entity.enums.RoleEnum;
+import com.tecno.ctgbank.models.entity.usuario.UserEntity;
+import com.tecno.ctgbank.models.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +20,7 @@ import java.util.Set;
 public class CorralitoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CorralitoApplication.class, args);
+        SpringApplication.run(com.tecno.ctgbank.CorralitoApplication.class, args);
     }
 
 
@@ -78,8 +77,9 @@ public class CorralitoApplication {
 
                 /* CREAR USUARIOS */
                 UserEntity userSantiago = UserEntity.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin")) // Codificar la contraseña
+                        .email("admin@gmail.com")
+                        .password(passwordEncoder.encode("admin"))
+                        .estado(Estado.ACTIVO)
                         .isEnabled(true)
                         .accountNoExpired(true)
                         .accountNoLocked(true)
@@ -88,8 +88,9 @@ public class CorralitoApplication {
                         .build();
 
                 UserEntity userDaniel = UserEntity.builder()
-                        .username("prueba")
-                        .password(passwordEncoder.encode("12345")) // Codificar la contraseña
+                        .email("prueba@gmail.com")
+                        .password(passwordEncoder.encode("12345"))
+                        .estado(Estado.ACTIVO)
                         .isEnabled(true)
                         .accountNoExpired(true)
                         .accountNoLocked(true)

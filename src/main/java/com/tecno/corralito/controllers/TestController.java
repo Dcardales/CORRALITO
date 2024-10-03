@@ -1,4 +1,4 @@
-package com.tecno.corralito.controllers;
+package com.tecno.ctgbank.controllers;
 
 import org.springframework.web.bind.annotation.*;
 

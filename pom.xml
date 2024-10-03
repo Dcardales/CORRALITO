@@ -11,7 +11,7 @@
     <groupId>com.tecno</groupId>
     <artifactId>corralito</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ctgbank</name>
+    <name>corralito</name>
     <description>Demo project for Spring Boot</description>
     <url/>
     <licenses>

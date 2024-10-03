@@ -1,4 +1,4 @@
-package com.tecno.corralito.util;
+package com.tecno.ctgbank.util;
 
 
 import com.auth0.jwt.JWT;
@@ -28,7 +28,7 @@ public class JwtUtils {
     public String createToken(Authentication authentication) {
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
-        String username = authentication.getPrincipal().toString();
+        String email = authentication.getPrincipal().toString();
         String authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -36,7 +36,7 @@ public class JwtUtils {
 
         String jwtToken = JWT.create()
                 .withIssuer(this.userGenerator)
-                .withSubject(username)
+                .withSubject(email)
                 .withClaim("authorities", authorities)
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
@@ -61,7 +61,7 @@ public class JwtUtils {
         }
     }
 
-    public String extractUsername(DecodedJWT decodedJWT) {
+    public String extractEmail(DecodedJWT decodedJWT) {
         return decodedJWT.getSubject();
     }
 

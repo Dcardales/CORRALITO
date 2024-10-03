@@ -1,8 +1,8 @@
-package com.tecno.corralito.security.filter;
+package com.tecno.ctgbank.security.filter;
 
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.tecno.corralito.util.JwtUtils;
+import com.tecno.ctgbank.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
             DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-            String username = jwtUtils.extractUsername(decodedJWT);
+            String username = jwtUtils.extractEmail(decodedJWT);
             String stringAuthorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
             Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);

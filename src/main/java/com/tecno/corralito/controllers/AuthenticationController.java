@@ -1,10 +1,10 @@
-package com.tecno.corralito.controllers;
+package com.tecno.ctgbank.controllers;
 
 
-import com.tecno.corralito.models.dto.authDTO.AuthCreateUserRequest;
-import com.tecno.corralito.models.dto.authDTO.AuthLoginRequest;
-import com.tecno.corralito.models.dto.authDTO.AuthResponse;
-import com.tecno.corralito.services.impl.UserDetailServiceImpl;
+import com.tecno.ctgbank.models.dto.AuthCreateUserRequest;
+import com.tecno.ctgbank.models.dto.AuthLoginRequest;
+import com.tecno.ctgbank.models.dto.AuthResponse;
+import com.tecno.ctgbank.services.impl.UserDetailServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
