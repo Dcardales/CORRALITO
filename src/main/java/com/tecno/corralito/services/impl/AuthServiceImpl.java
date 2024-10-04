@@ -3,13 +3,16 @@ package com.tecno.corralito.services.impl;
 
 
 
-import com.tecno.corralito.models.dto.usuarios.AuthCreateTuristaRequest;
+import com.tecno.corralito.exceptions.NacionalidadNotFoundException;
+import com.tecno.corralito.models.dto.Auth.AuthCreateComercioRequest;
+import com.tecno.corralito.models.dto.Auth.AuthCreateTuristaRequest;
+import com.tecno.corralito.models.entity.tiposUsuarios.Comercio;
 import com.tecno.corralito.models.entity.tiposUsuarios.Turista;
 import com.tecno.corralito.models.entity.usuario.Nacionalidad;
+import com.tecno.corralito.models.repository.tiposUsuarios.ComercioRepository;
 import com.tecno.corralito.models.repository.tiposUsuarios.NacionalidadRepository;
 import com.tecno.corralito.models.repository.tiposUsuarios.TuristaRepository;
-import com.tecno.corralito.models.request.Auth.AuthCreateUserRequest;
-import com.tecno.corralito.models.request.Auth.AuthLoginRequest;
+import com.tecno.corralito.models.dto.Auth.AuthLoginRequest;
 import com.tecno.corralito.models.response.AuthResponse;
 import com.tecno.corralito.models.entity.enums.Estado;
 import com.tecno.corralito.models.entity.enums.RoleEnum;
@@ -20,24 +23,22 @@ import com.tecno.corralito.models.repository.usuario.UserRepository;
 import com.tecno.corralito.services.IAuthService;
 import com.tecno.corralito.services.INacionalidadService;
 import com.tecno.corralito.util.JwtUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements UserDetailsService, IAuthService {
@@ -56,6 +57,9 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
 
     @Autowired
     private TuristaRepository turistaRepository;
+
+    @Autowired
+    private ComercioRepository comercioRepository;
 
     @Autowired
     private NacionalidadRepository nacionalidadRepository;
@@ -79,62 +83,6 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
 
 
         return new User(userEntity.getEmail(), userEntity.getPassword(), userEntity.isEnabled(), userEntity.isAccountNoExpired(), userEntity.isCredentialNoExpired(), userEntity.isAccountNoLocked(), authorityList);
-    }
-
-    public AuthResponse createUser(AuthCreateUserRequest createRoleRequest) {
-        String email = createRoleRequest.email();
-        String password = createRoleRequest.password();
-        String estado = createRoleRequest.estado();
-
-        // Inicializar rolesRequest como una lista vacía si roleRequest es null
-        List<String> rolesRequest = (createRoleRequest.roleRequest() != null)
-                ? createRoleRequest.roleRequest().roleListName()
-                : new ArrayList<>();
-
-        Set<RoleEntity> roleEntityList;
-
-        // Si no se especifican roles, asignar el rol USER automáticamente
-        if (rolesRequest == null || rolesRequest.isEmpty()) {
-            RoleEntity userRole = roleRepository.findByRoleEnum(RoleEnum.USER)
-                    .orElseThrow(() -> new IllegalArgumentException("Default role USER not found."));
-            roleEntityList = new HashSet<>();
-            roleEntityList.add(userRole);
-        } else {
-            // Si se especifican roles (como ADMIN), los asignamos
-            roleEntityList = roleRepository.findRoleEntitiesByRoleEnumIn(rolesRequest)
-                    .stream().collect(Collectors.toSet());
-
-            if (roleEntityList.isEmpty()) {
-                throw new IllegalArgumentException("The roles specified do not exist.");
-            }
-        }
-
-        // Crear el usuario con los roles asignados
-        UserEntity userEntity = UserEntity.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .estado(Estado.ACTIVO)
-                .roles(roleEntityList)
-                .isEnabled(true)
-                .accountNoLocked(true)
-                .accountNoExpired(true)
-                .credentialNoExpired(true)
-                .build();
-
-        UserEntity userSaved = userRepository.save(userEntity);
-
-
-        // Generar token JWT
-        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        userSaved.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleEnum().name())));
-        userSaved.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
-                .forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
-
-        SecurityContext securityContextHolder = SecurityContextHolder.getContext();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
-        String accessToken = jwtUtils.createToken(authentication);
-
-        return new AuthResponse(email, "User created successfully", accessToken, true);
     }
 
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest) {
@@ -164,6 +112,7 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         return new UsernamePasswordAuthenticationToken(email, password, userDetails.getAuthorities());
     }
 
+    @Transactional
     @Override
     public AuthResponse registerTurista(AuthCreateTuristaRequest turistaRequest) {
         String email = turistaRequest.getEmail();
@@ -196,19 +145,16 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         UserEntity userSaved = userRepository.save(userEntity);
 
         // Manejo de la nacionalidad
-        Optional<Nacionalidad> nacionalidadOptional = nacionalidadRepository.findByDescripcion(turistaRequest.getNacionalidad());
-        if (nacionalidadOptional.isEmpty()) {
-            return new AuthResponse(email, "Nacionalidad no encontrada", null, false);
-        }
+        Nacionalidad nacionalidad = nacionalidadRepository.findByDescripcion(turistaRequest.getNacionalidad())
+                .orElseThrow(() -> new NacionalidadNotFoundException("Nacionalidad " + turistaRequest.getNacionalidad() + " no encontrada"));
 
         // Crear el objeto Turista y asociarlo con el Usuario y la Nacionalidad
         Turista turista = new Turista();
         turista.setNombre(turistaRequest.getNombre());
         turista.setApellidos(turistaRequest.getApellidos());
         turista.setTelefono(turistaRequest.getTelefono());
-
         turista.setGenero(turistaRequest.getGenero());
-        turista.setNacionalidad(nacionalidadOptional.get());
+        turista.setNacionalidad(nacionalidad);
         turista.setUsuario(userSaved);
 
         // Guardar el turista en la base de datos
@@ -225,5 +171,62 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
 
         return new AuthResponse(email, "Turista registrado exitosamente", accessToken, true);
     }
+
+    @Transactional
+    @Override
+    public AuthResponse registerComercio(AuthCreateComercioRequest comercioRequest) {
+        String email = comercioRequest.getEmail();
+        String password = comercioRequest.getPassword();
+
+        // Verificar si el correo ya está registrado
+        Optional<UserEntity> existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            return new AuthResponse(email, "El usuario ya existe", null, false);
+        }
+
+        // Asignar el rol COMERCIO automáticamente
+        RoleEntity comercioRole = roleRepository.findByRoleEnum(RoleEnum.COMERCIO)
+                .orElseThrow(() -> new IllegalArgumentException("Rol COMERCIO no encontrado."));
+        Set<RoleEntity> roleEntityList = new HashSet<>();
+        roleEntityList.add(comercioRole);
+
+        // Crear el usuario con el rol asignado
+        UserEntity userEntity = UserEntity.builder()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .estado(Estado.PENDIENTE)  // Inicialmente pendiente hasta que un administrador lo active
+                .roles(roleEntityList)
+                .isEnabled(true)
+                .accountNoLocked(true)
+                .accountNoExpired(true)
+                .credentialNoExpired(true)
+                .build();
+
+        UserEntity userSaved = userRepository.save(userEntity);
+
+        // Crear el objeto Comercio y asociarlo con el Usuario
+        Comercio comercio = new Comercio();
+        comercio.setNombreComercio(comercioRequest.getNombreComercio());
+        comercio.setNit(comercioRequest.getNit());
+        comercio.setRazonSocial(comercioRequest.getRazonSocial());
+        comercio.setDireccionComercio(comercioRequest.getDireccionComercio());
+        comercio.setTelefono(comercioRequest.getTelefono());
+        comercio.setUsuario(userSaved);
+
+        // Guardar el comercio en la base de datos
+        comercioRepository.save(comercio);
+
+        // Generar token JWT
+        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        userSaved.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleEnum().name())));
+        userSaved.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
+                .forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
+        String accessToken = jwtUtils.createToken(authentication);
+
+        return new AuthResponse(email, "Comercio registrado exitosamente", accessToken, true);
+    }
+
 }
 

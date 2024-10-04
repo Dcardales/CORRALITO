@@ -23,11 +23,9 @@ public class Comercio  {
     private Integer id;
 
     @Column(name = "nombre_comercio", nullable = false)
-    @NotEmpty(message = "El nombre del comercio no puede estar vacío")
     private String nombreComercio;
 
     @Column(name = "nit", nullable = false, unique = true)
-    @NotEmpty(message = "El NIT no puede estar vacío")
     private String nit;
 
     @Column(name = "razon_social", length = 100)
@@ -38,9 +36,6 @@ public class Comercio  {
 
     @Column(name = "telefono", length = 15)
     private String telefono;
-
-    @Column(name = "tipo_comercio", length = 50)
-    private String tipoComercio;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")

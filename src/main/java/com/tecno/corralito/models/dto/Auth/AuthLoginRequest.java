@@ -1,4 +1,4 @@
-package com.tecno.corralito.models.request.Auth;
+package com.tecno.corralito.models.dto.Auth;
 
 import jakarta.validation.constraints.NotBlank;
 

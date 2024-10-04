@@ -1,4 +1,4 @@
-package com.tecno.corralito.models.dto.tiposUsuarios;
+package com.tecno.corralito.models.dto;
 
 
 import lombok.*;
