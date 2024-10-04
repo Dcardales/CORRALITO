@@ -1,11 +1,11 @@
-package com.tecno.ctgbank;
+package com.tecno.corralito;
 
-import com.tecno.ctgbank.models.entity.enums.Estado;
-import com.tecno.ctgbank.models.entity.usuario.PermissionEntity;
-import com.tecno.ctgbank.models.entity.usuario.RoleEntity;
-import com.tecno.ctgbank.models.entity.enums.RoleEnum;
-import com.tecno.ctgbank.models.entity.usuario.UserEntity;
-import com.tecno.ctgbank.models.repository.UserRepository;
+import com.tecno.corralito.models.entity.enums.Estado;
+import com.tecno.corralito.models.entity.enums.RoleEnum;
+import com.tecno.corralito.models.entity.usuario.PermissionEntity;
+import com.tecno.corralito.models.entity.usuario.RoleEntity;
+import com.tecno.corralito.models.entity.usuario.UserEntity;
+import com.tecno.corralito.models.repository.usuario.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
-public class CtgbankApplication {
+public class CorralitoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CtgbankApplication.class, args);
+        SpringApplication.run(CorralitoApplication.class, args);
     }
 
 
@@ -75,8 +75,35 @@ public class CtgbankApplication {
                         ))
                         .build();
 
+                RoleEntity roleTurista = RoleEntity.builder()
+                        .roleEnum(RoleEnum.TURISTA)
+                        .permissionList(Set.of(
+                                consultarPermission,
+                                transferirPermission,
+                                viewTransactionPermission
+                        ))
+                        .build();
+
+                RoleEntity roleEnte = RoleEntity.builder()
+                        .roleEnum(RoleEnum.ENTEREGULADOR)
+                        .permissionList(Set.of(
+                                consultarPermission,
+                                transferirPermission,
+                                viewTransactionPermission
+                        ))
+                        .build();
+
+                RoleEntity roleCmercio = RoleEntity.builder()
+                        .roleEnum(RoleEnum.COMERCIO)
+                        .permissionList(Set.of(
+                                consultarPermission,
+                                transferirPermission,
+                                viewTransactionPermission
+                        ))
+                        .build();
+
                 /* CREAR USUARIOS */
-                UserEntity userSantiago = UserEntity.builder()
+                UserEntity userDaniel = UserEntity.builder()
                         .email("admin@gmail.com")
                         .password(passwordEncoder.encode("admin"))
                         .estado(Estado.ACTIVO)
@@ -87,7 +114,7 @@ public class CtgbankApplication {
                         .roles(Set.of(roleAdmin))
                         .build();
 
-                UserEntity userDaniel = UserEntity.builder()
+                UserEntity userTurista = UserEntity.builder()
                         .email("prueba@gmail.com")
                         .password(passwordEncoder.encode("12345"))
                         .estado(Estado.ACTIVO)
@@ -95,10 +122,10 @@ public class CtgbankApplication {
                         .accountNoExpired(true)
                         .accountNoLocked(true)
                         .credentialNoExpired(true)
-                        .roles(Set.of(roleUser))
+                        .roles(Set.of(roleTurista))
                         .build();
 
-                userRepository.saveAll(List.of(userSantiago, userDaniel));
+                userRepository.saveAll(List.of(userDaniel, userTurista));
             };
         }
     }
