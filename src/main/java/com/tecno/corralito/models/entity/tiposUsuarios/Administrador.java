@@ -1,7 +1,6 @@
 package com.tecno.corralito.models.entity.tiposUsuarios;
 
 
-
 import com.tecno.corralito.models.entity.enums.TipoIdentificacion;
 import com.tecno.corralito.models.entity.usuario.UserEntity;
 import jakarta.persistence.*;
@@ -16,7 +15,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "administrador")
-public class Administrador  {
+public class Administrador {
 
     @Id
     @Column(name = "id_admin")

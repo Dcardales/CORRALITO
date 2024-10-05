@@ -1,7 +1,6 @@
 package com.tecno.corralito.models.repository.usuario;
 
 
-
 import com.tecno.corralito.models.entity.usuario.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

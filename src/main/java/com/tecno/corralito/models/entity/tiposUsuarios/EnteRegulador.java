@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +15,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "ente_regulador")
-public class EnteRegulador  {
+public class EnteRegulador {
 
     @Id
     @Column(name = "id_ente")
@@ -44,5 +43,6 @@ public class EnteRegulador  {
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private UserEntity usuario;
+
 }
 

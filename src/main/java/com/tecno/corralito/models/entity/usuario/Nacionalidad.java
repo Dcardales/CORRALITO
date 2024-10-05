@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "Nacionalidad")
-public class Nacionalidad  {
+public class Nacionalidad {
 
     @Id
     @Column(name = "id_nacionalidad")
@@ -19,13 +19,13 @@ public class Nacionalidad  {
     private Integer idNacionalidad;
 
     @Column(name = "codigo", unique = true)
-    private String codigo; // Ej. "US", "CO", etc.
+    private String codigo;
 
     @Column(name = "descripcion")
-    private String descripcion; // Ej. "United States", "Colombia", etc.
+    private String descripcion;
 
 
-    public Nacionalidad(String codigo,String descripcion) {
+    public Nacionalidad(String codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
     }

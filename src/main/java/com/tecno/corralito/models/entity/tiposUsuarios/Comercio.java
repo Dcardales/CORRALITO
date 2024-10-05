@@ -3,9 +3,7 @@ package com.tecno.corralito.models.entity.tiposUsuarios;
 
 import com.tecno.corralito.models.entity.usuario.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
-
 
 
 @Data
@@ -15,7 +13,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "comercio")
-public class Comercio  {
+public class Comercio {
 
     @Id
     @Column(name = "id_comercio")

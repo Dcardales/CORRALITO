@@ -93,7 +93,7 @@ public class CorralitoApplication {
                         ))
                         .build();
 
-                RoleEntity roleCmercio = RoleEntity.builder()
+                RoleEntity roleComercio = RoleEntity.builder()
                         .roleEnum(RoleEnum.COMERCIO)
                         .permissionList(Set.of(
                                 consultarPermission,
@@ -115,7 +115,7 @@ public class CorralitoApplication {
                         .build();
 
                 UserEntity userTurista = UserEntity.builder()
-                        .email("prueba@gmail.com")
+                        .email("turista@gmail.com")
                         .password(passwordEncoder.encode("12345"))
                         .estado(Estado.ACTIVO)
                         .isEnabled(true)
@@ -125,7 +125,29 @@ public class CorralitoApplication {
                         .roles(Set.of(roleTurista))
                         .build();
 
-                userRepository.saveAll(List.of(userDaniel, userTurista));
+                UserEntity userComercio = UserEntity.builder()
+                        .email("comercio@gmail.com")
+                        .password(passwordEncoder.encode("12345"))
+                        .estado(Estado.ACTIVO)
+                        .isEnabled(true)
+                        .accountNoExpired(true)
+                        .accountNoLocked(true)
+                        .credentialNoExpired(true)
+                        .roles(Set.of(roleComercio))
+                        .build();
+
+                UserEntity userEnte = UserEntity.builder()
+                        .email("ente@gmail.com")
+                        .password(passwordEncoder.encode("12345"))
+                        .estado(Estado.ACTIVO)
+                        .isEnabled(true)
+                        .accountNoExpired(true)
+                        .accountNoLocked(true)
+                        .credentialNoExpired(true)
+                        .roles(Set.of(roleEnte))
+                        .build();
+
+                userRepository.saveAll(List.of(userDaniel, userTurista, userEnte, userComercio));
             };
         }
     }

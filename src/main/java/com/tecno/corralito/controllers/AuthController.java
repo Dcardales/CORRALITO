@@ -1,10 +1,9 @@
 package com.tecno.corralito.controllers;
 
 
-import com.tecno.corralito.models.dto.Auth.AuthCreateTuristaRequest;
-import com.tecno.corralito.services.IAuthService;
-import com.tecno.corralito.models.dto.Auth.AuthLoginRequest;
+import com.tecno.corralito.models.dto.Auth.*;
 import com.tecno.corralito.models.response.AuthResponse;
+import com.tecno.corralito.services.IAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -47,4 +46,56 @@ public class AuthController {
         AuthResponse response = authService.registerTurista(turistaRequest);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/register-comercio")
+    public ResponseEntity<AuthResponse> registerComercio(@Valid @RequestBody AuthCreateComercioRequest comercioRequest, BindingResult result) {
+        // Verifica si hay errores de validación
+        if (result.hasErrors()) {
+            // Mapea los errores de validación a un formato amigable
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(new AuthResponse(null, "Errores de validación: " + String.join(", ", errors), null, false));
+        }
+
+        // Llama al servicio si no hay errores de validación
+        AuthResponse response = authService.registerComercio(comercioRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/register-enteRegulador")
+    public ResponseEntity<AuthResponse> registerEnteRegulador(@Valid @RequestBody AuthCreateEnteRequest enteRequest, BindingResult result) {
+        // Verifica si hay errores de validación
+        if (result.hasErrors()) {
+            // Mapea los errores de validación a un formato amigable
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(new AuthResponse(null, "Errores de validación: " + String.join(", ", errors), null, false));
+        }
+
+        // Llama al servicio si no hay errores de validación
+        AuthResponse response = authService.registerEnteRegulador(enteRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/register-administrador")
+    public ResponseEntity<AuthResponse> registerAdmin(@Valid @RequestBody AuthCreateAdminRequest adminRequest, BindingResult result) {
+        // Verifica si hay errores de validación
+        if (result.hasErrors()) {
+            // Mapea los errores de validación a un formato amigable
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(new AuthResponse(null, "Errores de validación: " + String.join(", ", errors), null, false));
+        }
+
+        // Llama al servicio si no hay errores de validación
+        AuthResponse response = authService.registerAdministrador(adminRequest);
+        return ResponseEntity.ok(response);
+    }
+
 }

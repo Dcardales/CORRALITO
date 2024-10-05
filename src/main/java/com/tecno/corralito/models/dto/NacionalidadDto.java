@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class NacionalidadDto  {
+public class NacionalidadDto {
     private String codigo;
     private String descripcion;
 }

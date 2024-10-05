@@ -1,7 +1,6 @@
 package com.tecno.corralito.models.repository.tiposUsuarios;
 
 
-
 import com.tecno.corralito.models.entity.usuario.Nacionalidad;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,6 @@
 package com.tecno.corralito.services.impl;
 
 
-
 import com.tecno.corralito.models.entity.usuario.Nacionalidad;
 import com.tecno.corralito.models.repository.tiposUsuarios.NacionalidadRepository;
 import com.tecno.corralito.services.INacionalidadService;
