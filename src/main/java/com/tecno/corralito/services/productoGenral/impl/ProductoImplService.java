@@ -25,6 +25,7 @@ public class ProductoImplService implements IProductoService {
     @Autowired
     private ProductoMapper productoMapper; // Mapper de MapStruct
 
+
     @Override
     public List<ProductoDto> listAll() {
         List<Producto> productos = productoRepository.findAll();

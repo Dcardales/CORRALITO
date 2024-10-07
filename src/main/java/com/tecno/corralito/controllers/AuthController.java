@@ -3,7 +3,7 @@ package com.tecno.corralito.controllers;
 
 import com.tecno.corralito.models.dto.Auth.*;
 import com.tecno.corralito.models.response.AuthResponse;
-import com.tecno.corralito.services.IAuthService;
+import com.tecno.corralito.services.Usuario.IAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

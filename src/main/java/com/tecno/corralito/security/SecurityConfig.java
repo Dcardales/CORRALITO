@@ -2,7 +2,7 @@ package com.tecno.corralito.security;
 
 
 import com.tecno.corralito.security.filter.JwtTokenValidator;
-import com.tecno.corralito.services.impl.AuthServiceImpl;
+import com.tecno.corralito.services.Usuario.impl.AuthServiceImpl;
 import com.tecno.corralito.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +36,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     // Endpoints públicos
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+
+                    http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();
 
                     // Endpoints protegidos
                     http.requestMatchers(HttpMethod.GET, "/cuentas/{id}/saldo").hasAnyRole("USER", "ADMIN");

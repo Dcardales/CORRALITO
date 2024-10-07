@@ -1,4 +1,4 @@
-package com.tecno.corralito.services;
+package com.tecno.corralito.services.Usuario;
 
 import com.tecno.corralito.models.dto.Auth.*;
 import com.tecno.corralito.models.response.AuthResponse;

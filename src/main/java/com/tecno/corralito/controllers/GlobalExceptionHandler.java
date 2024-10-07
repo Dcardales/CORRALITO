@@ -1,10 +1,9 @@
 package com.tecno.corralito.controllers;
 
 import com.tecno.corralito.exceptions.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tecno.corralito.models.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -62,6 +61,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DatabaseOperationException.class)
     public ResponseEntity<String> handleDatabaseOperation(DatabaseOperationException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(CategoriaNotFoundException.class)
+    public ResponseEntity<String> handleCategoriaNotFoundException(CategoriaNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+
+    @ExceptionHandler(ZonaAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleZonaAlreadyExistsException(ZonaAlreadyExistsException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
 }

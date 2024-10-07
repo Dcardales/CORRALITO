@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface ComercioRepository extends JpaRepository<Comercio, Integer> {
     Optional<Comercio> findByNit(String nit);
+
     Optional<Comercio> findByNombreComercio(String nombreComercio);
 }

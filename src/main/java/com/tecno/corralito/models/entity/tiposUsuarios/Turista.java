@@ -29,11 +29,11 @@ public class Turista {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Nacionalidad nacionalidad;
 
-    @Column(name = "nombre",length = 100, nullable = false)
+    @Column(name = "nombre", length = 100, nullable = false)
     @NotEmpty(message = "El nombre no puede estar vacío")
     private String nombre;
 
-    @Column(name = "apellidos",length = 100, nullable = false)
+    @Column(name = "apellidos", length = 100, nullable = false)
     @NotEmpty(message = "Los apellidos no pueden estar vacíos")
     private String apellidos;
 

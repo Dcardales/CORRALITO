@@ -1,14 +1,20 @@
 package com.tecno.corralito.services.productoGenral.impl;
 
 
+import com.tecno.corralito.exceptions.CategoriaAlreadyExistsException;
+import com.tecno.corralito.exceptions.CategoriaNotFoundException;
+import com.tecno.corralito.mapper.CategoriaMapper;
 import com.tecno.corralito.models.dto.productoGeneral.CategoriaDto;
 import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.services.productoGenral.ICategoriaService;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -33,8 +39,8 @@ public class CategoriaImplService implements ICategoriaService {
     @Override
     public Categoria save(CategoriaDto categoriaDto) {
 
-        if (categoriaDto.getIdCategoia() != null && existsById(categoriaDto.getIdCategoia())) {
-            Categoria categoriaExistente = findById(categoriaDto.getIdCategoia());
+        if (categoriaDto.getIdCategoria() != null && existsById(categoriaDto.getIdCategoria())) {
+            Categoria categoriaExistente = findById(categoriaDto.getIdCategoria());
             categoriaExistente.setNombreCategoria(categoriaDto.getNombreCategoria());
             return categoriaRepository.save(categoriaExistente);
         } else {
@@ -62,3 +68,5 @@ public class CategoriaImplService implements ICategoriaService {
         return categoriaRepository.existsById(id);
     }
 }
+
+

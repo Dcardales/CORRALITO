@@ -1,4 +1,4 @@
-package com.tecno.corralito.services.impl;
+package com.tecno.corralito.services.Usuario.impl;
 
 
 import com.tecno.corralito.exceptions.NacionalidadNotFoundException;
@@ -16,8 +16,8 @@ import com.tecno.corralito.models.repository.tiposUsuarios.*;
 import com.tecno.corralito.models.repository.usuario.RoleRepository;
 import com.tecno.corralito.models.repository.usuario.UserRepository;
 import com.tecno.corralito.models.response.AuthResponse;
-import com.tecno.corralito.services.IAuthService;
-import com.tecno.corralito.services.INacionalidadService;
+import com.tecno.corralito.services.Usuario.IAuthService;
+import com.tecno.corralito.services.Usuario.INacionalidadService;
 import com.tecno.corralito.util.JwtUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

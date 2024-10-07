@@ -1,9 +1,9 @@
-package com.tecno.corralito.services.impl;
+package com.tecno.corralito.services.Usuario.impl;
 
 
 import com.tecno.corralito.models.entity.usuario.Nacionalidad;
 import com.tecno.corralito.models.repository.tiposUsuarios.NacionalidadRepository;
-import com.tecno.corralito.services.INacionalidadService;
+import com.tecno.corralito.services.Usuario.INacionalidadService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

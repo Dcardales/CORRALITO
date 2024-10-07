@@ -1,7 +1,6 @@
 package com.tecno.corralito.models.dto.productoGeneral;
 
 
-
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
