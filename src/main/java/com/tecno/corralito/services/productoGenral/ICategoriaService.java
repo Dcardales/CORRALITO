@@ -1,24 +1,23 @@
 package com.tecno.corralito.services.productoGenral;
 
 import com.tecno.corralito.models.dto.productoGeneral.CategoriaDto;
-import com.tecno.corralito.models.entity.productoGeneral.Categoria;
-import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface ICategoriaService {
 
-    List<Categoria> listAll();
+    CategoriaDto crearCategoria(CategoriaDto categoriaDto);
 
-    Categoria save(CategoriaDto perfil);
+    CategoriaDto actualizarCategoria(Integer idCategoria, CategoriaDto categoriaDto);
 
-    Categoria findById(Integer id);
+    void eliminarCategoria(Integer idCategoria);
 
-    void delete(Categoria perfil);
+    List<CategoriaDto> listarCategorias();
 
-    boolean existsById(Integer id);
+    CategoriaDto obtenerCategoriaPorId(Integer idCategoria);
 
+    CategoriaDto obtenerCategoriaPorNombre(String nombreCategoria);
 }
 
 

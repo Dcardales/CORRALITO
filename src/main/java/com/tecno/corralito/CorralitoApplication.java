@@ -41,19 +41,19 @@ public class CorralitoApplication {
             return args -> {
                 /* Crear PERMISOS */
                 PermissionEntity consultarPermission = PermissionEntity.builder()
-                        .name("CONSULTAR")
+                        .name("CATEGORIAS")
                         .build();
 
                 PermissionEntity transferirPermission = PermissionEntity.builder()
-                        .name("TRANSFERIR")
+                        .name("PRODUCTOS")
                         .build();
 
                 PermissionEntity viewAccountPermission = PermissionEntity.builder()
-                        .name("VIEW_ACCOUNT")
+                        .name("ZONAS")
                         .build();
 
                 PermissionEntity viewTransactionPermission = PermissionEntity.builder()
-                        .name("VIEW_TRANSACTION")
+                        .name("VIEW_PRODUCTOS")
                         .build();
 
                 /* Crear ROLES */

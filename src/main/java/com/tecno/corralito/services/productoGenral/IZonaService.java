@@ -1,25 +1,21 @@
 package com.tecno.corralito.services.productoGenral;
 
 import com.tecno.corralito.models.dto.productoGeneral.ZonaDto;
-import com.tecno.corralito.models.entity.productoGeneral.Zona;
-import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface IZonaService {
 
-    List<Zona> listAll();
+    ZonaDto crearZona(ZonaDto zonaDto);
 
-    Zona save(@Valid ZonaDto zonaDto);
+    ZonaDto actualizarZona(Integer id, ZonaDto zonaDto);
 
-    Zona findById(Integer id);
+    void eliminarZona(Integer id);
 
-    void delete(Zona zona);
+    List<ZonaDto> listarTodas();
 
-    boolean existsById(Integer id);
-
-    Optional<Zona> findByNombreZona(String nombreZona);
+    ZonaDto buscarPorNombre(String nombreZona);
 }
 
 

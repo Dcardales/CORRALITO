@@ -75,4 +75,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ProductoYaExisteException.class)
+    public ResponseEntity<String> handleProductoYaExisteException(ProductoYaExisteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
 }

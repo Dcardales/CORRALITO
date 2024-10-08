@@ -37,13 +37,26 @@ public class SecurityConfig {
                     // Endpoints públicos
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
 
+                    // Swagger público
                     http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();
 
-                    // Endpoints protegidos
-                    http.requestMatchers(HttpMethod.GET, "/cuentas/{id}/saldo").hasAnyRole("USER", "ADMIN");
-                    http.requestMatchers(HttpMethod.POST, "/cuentas/transferir").hasRole("USER");
-                    http.requestMatchers(HttpMethod.GET, "/cuentas/todas").hasRole("ADMIN");
-                    http.requestMatchers(HttpMethod.GET, "/transacciones/cuenta/{cuentaId}").hasAnyRole("USER", "ADMIN");
+                    // Endpoints de Categoría (protegidos)
+                    http.requestMatchers(HttpMethod.POST, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.GET, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+
+                    // Endpoints de Producto (protegidos)
+                    http.requestMatchers(HttpMethod.POST, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.GET, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+
+                    // Endpoints de Zona (protegidos)
+                    http.requestMatchers(HttpMethod.POST, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.GET, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
                     // Denegar todos los demás
                     http.anyRequest().denyAll();

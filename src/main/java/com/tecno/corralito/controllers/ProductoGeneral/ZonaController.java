@@ -2,14 +2,12 @@ package com.tecno.corralito.controllers.ProductoGeneral;
 
 
 import com.tecno.corralito.models.dto.productoGeneral.ZonaDto;
-import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.response.MensajeResponse;
 import com.tecno.corralito.services.productoGenral.IZonaService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,61 +15,64 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/zonas")
-@Validated
 public class ZonaController {
 
-    private final IZonaService zonaService;
-
     @Autowired
-    public ZonaController(IZonaService zonaService) {
-        this.zonaService = zonaService;
-    }
+    private IZonaService iZonaService;
 
-    @GetMapping
-    public ResponseEntity<List<Zona>> getAllZonas() {
-        List<Zona> zonas = zonaService.listAll();
-        return ResponseEntity.ok(zonas);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MensajeResponse> getZonaById(@PathVariable Integer id) {
-        Zona zona = zonaService.findById(id);
-        MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Zona encontrada con éxito")
-                .object(zona)
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @PostMapping
-    public ResponseEntity<MensajeResponse> createZona(@Valid @RequestBody ZonaDto zonaDto) {
-        Zona nuevaZona = zonaService.save(zonaDto);
+    public ResponseEntity<MensajeResponse> crearZona(@RequestBody ZonaDto zonaDto) {
+        ZonaDto nuevaZona = iZonaService.crearZona(zonaDto);
         MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Zona creada con éxito")
+                .mensaje("Zona creada exitosamente")
                 .object(nuevaZona)
                 .build();
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<MensajeResponse> updateZona(@PathVariable Integer id, @Valid @RequestBody ZonaDto zonaDto) {
-        zonaDto.setIdZona(id); // Aseguramos que el ID sea el correcto
-        Zona zonaActualizada = zonaService.save(zonaDto);
+    public ResponseEntity<MensajeResponse> actualizarZona(
+            @PathVariable Integer id,
+            @RequestBody ZonaDto zonaDto) {
+        ZonaDto zonaActualizada = iZonaService.actualizarZona(id, zonaDto);
         MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Zona actualizada con éxito")
+                .mensaje("Zona actualizada exitosamente")
                 .object(zonaActualizada)
                 .build();
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<MensajeResponse> deleteZona(@PathVariable Integer id) {
-        Zona zona = zonaService.findById(id);  // Verificamos si la zona existe
-        zonaService.delete(zona);
+    public ResponseEntity<MensajeResponse> eliminarZona(@PathVariable Integer id) {
+        iZonaService.eliminarZona(id);
         MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Zona eliminada con éxito")
+                .mensaje("Zona eliminada exitosamente")
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+    @GetMapping
+    public ResponseEntity<MensajeResponse> listarTodasLasZonas() {
+        List<ZonaDto> listaZonas = iZonaService.listarTodas();
+        MensajeResponse response = MensajeResponse.builder()
+                .mensaje("Lista de todas las zonas")
+                .object(listaZonas)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+    @GetMapping("/buscar")
+    public ResponseEntity<MensajeResponse> buscarPorNombre(@RequestParam String nombreZona) {
+        ZonaDto zona = iZonaService.buscarPorNombre(nombreZona);
+        MensajeResponse response = MensajeResponse.builder()
+                .mensaje("Zona encontrada")
                 .object(zona)
                 .build();
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

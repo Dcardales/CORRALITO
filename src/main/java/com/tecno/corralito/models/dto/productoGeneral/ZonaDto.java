@@ -1,7 +1,6 @@
 package com.tecno.corralito.models.dto.productoGeneral;
 
 
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 

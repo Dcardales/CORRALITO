@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,87 +18,65 @@ import java.util.List;
 public class ProductoController {
 
     @Autowired
-    private IProductoService productoService;
+    private IProductoService iProductoService;
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+    @PostMapping
+    public ResponseEntity<MensajeResponse> crearProducto(@Valid @RequestBody ProductoDto productoDto) {
+        ProductoDto productoCreado = iProductoService.crearProducto(productoDto);
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
+                .mensaje("Producto creado exitosamente")
+                .object(productoCreado)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(mensajeResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+    @PutMapping("/{id}")
+    public ResponseEntity<MensajeResponse> actualizarProducto(
+            @PathVariable Integer id,
+            @Valid @RequestBody ProductoDto productoDto) {
+
+        ProductoDto productoActualizado = iProductoService.actualizarProducto(id, productoDto);
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
+                .mensaje("Producto actualizado exitosamente")
+                .object(productoActualizado)
+                .build();
+        return ResponseEntity.ok(mensajeResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarProducto(@PathVariable Integer id) {
+        iProductoService.eliminarProducto(id);
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
+                .mensaje("Producto eliminado exitosamente")
+                .object(null)
+                .build();
+        return ResponseEntity.ok(mensajeResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @GetMapping
-    public ResponseEntity<MensajeResponse> listAll() {
-        List<ProductoDto> productos = productoService.listAll();
-        MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Lista de productos obtenida con éxito")
+    public ResponseEntity<MensajeResponse> listarProductos() {
+        List<ProductoDto> productos = iProductoService.listarProductos();
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
+                .mensaje("Lista de productos obtenida exitosamente")
                 .object(productos)
                 .build();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(mensajeResponse);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MensajeResponse> getById(@PathVariable("id") Integer id) {
-        ProductoDto producto = productoService.findById(id);
-        if (producto != null) {
-            MensajeResponse response = MensajeResponse.builder()
-                    .mensaje("Producto encontrado")
-                    .object(producto)
-                    .build();
-            return ResponseEntity.ok(response);
-        } else {
-            MensajeResponse response = MensajeResponse.builder()
-                    .mensaje("Producto no encontrado")
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<MensajeResponse> create(@Valid @RequestBody ProductoDto productoDto, BindingResult result) {
-        if (result.hasErrors()) {
-            MensajeResponse errorResponse = MensajeResponse.builder()
-                    .mensaje("Errores de validación")
-                    .object(result.getAllErrors())
-                    .build();
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
-
-        ProductoDto createdProducto = productoService.save(productoDto);
-        MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Producto creado con éxito")
-                .object(createdProducto)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+    @GetMapping("/buscar")
+    public ResponseEntity<MensajeResponse> buscarProductoPorNombre(@RequestParam String nombre) {
+        ProductoDto producto = iProductoService.buscarProductoPorNombre(nombre);
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
+                .mensaje("Producto encontrado")
+                .object(producto)
                 .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<MensajeResponse> update(@PathVariable("id") Integer id,
-                                                  @Valid @RequestBody ProductoDto productoDto,
-                                                  BindingResult result) {
-        if (result.hasErrors()) {
-            MensajeResponse errorResponse = MensajeResponse.builder()
-                    .mensaje("Errores de validación")
-                    .object(result.getAllErrors())
-                    .build();
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
-
-        ProductoDto updatedProducto = productoService.save(productoDto);
-        MensajeResponse response = MensajeResponse.builder()
-                .mensaje("Producto actualizado con éxito")
-                .object(updatedProducto)
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MensajeResponse> delete(@PathVariable("id") Integer id) {
-        if (productoService.existsById(id)) {
-            productoService.delete(id);
-            MensajeResponse response = MensajeResponse.builder()
-                    .mensaje("Producto eliminado con éxito")
-                    .build();
-            return ResponseEntity.noContent().build();
-        } else {
-            MensajeResponse response = MensajeResponse.builder()
-                    .mensaje("Producto no encontrado para eliminar")
-                    .build();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+        return ResponseEntity.ok(mensajeResponse);
     }
 }
+
 

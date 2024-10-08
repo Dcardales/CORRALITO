@@ -6,5 +6,4 @@ public enum RoleEnum {
     TURISTA,
     COMERCIO,
     ENTEREGULADOR,
-    ADMINISTRADOR
 }
