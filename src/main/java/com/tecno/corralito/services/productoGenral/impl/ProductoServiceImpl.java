@@ -1,6 +1,7 @@
 package com.tecno.corralito.services.productoGenral.impl;
 
 
+import com.tecno.corralito.exceptions.PrecioInvalidoException;
 import com.tecno.corralito.exceptions.ProductoNotFoundException;
 import com.tecno.corralito.exceptions.ProductoYaExisteException;
 import com.tecno.corralito.mapper.ProductoMapper;
@@ -24,14 +25,15 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public ProductoDto crearProducto(ProductoDto productoDto) {
-        // Validar que el nombre del producto no exista ya en la base de datos
-        if (productoRepository.existsByNombreProducto(productoDto.getNombreProducto())) {
-            throw new ProductoYaExisteException("El nombre del producto ya existe");
+
+        // Validar que no exista un producto con el mismo nombre en la misma zona
+        if (productoRepository.existsByNombreProductoAndZonaIdZona(productoDto.getNombreProducto(), productoDto.getZona().getIdZona())) {
+            throw new ProductoYaExisteException("El nombre del producto ya existe en la misma zona");
         }
 
         // Validar que el precio máximo sea mayor que el precio mínimo
         if (productoDto.getPrecioMax().compareTo(productoDto.getPrecioMin()) <= 0) {
-            throw new IllegalArgumentException("El precio máximo debe ser mayor que el precio mínimo");
+            throw new PrecioInvalidoException("El precio máximo debe ser mayor que el precio mínimo");
         }
 
         // Convertir DTO a entidad y guardar en la base de datos
@@ -47,14 +49,14 @@ public class ProductoServiceImpl implements IProductoService {
         Producto productoExistente = productoRepository.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado con id: " + id));
 
-        // Validar que el nombre del producto no exista ya en otro producto
-        if (productoRepository.existsByNombreProductoAndIdProductoNot(productoDto.getNombreProducto(), id)) {
-            throw new ProductoYaExisteException("El nombre del producto ya está en uso por otro producto");
+        // Validar que no exista un producto con el mismo nombre en la misma zona
+        if (productoRepository.existsByNombreProductoAndZonaIdZona(productoDto.getNombreProducto(), productoDto.getZona().getIdZona())) {
+            throw new ProductoYaExisteException("El nombre del producto ya existe en la misma zona");
         }
 
         // Validar que el precio máximo sea mayor que el precio mínimo
         if (productoDto.getPrecioMax().compareTo(productoDto.getPrecioMin()) <= 0) {
-            throw new IllegalArgumentException("El precio máximo debe ser mayor que el precio mínimo");
+            throw new PrecioInvalidoException ("El precio máximo debe ser mayor que el precio mínimo");
         }
 
         // Actualizar los campos del producto existente usando el mapper

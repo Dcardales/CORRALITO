@@ -1,7 +1,7 @@
 package com.tecno.corralito.services.productoGenral.impl;
 
 
-import com.tecno.corralito.exceptions.ZonaAlreadyExistsException;
+import com.tecno.corralito.exceptions.ZonaYaExisteException;
 import com.tecno.corralito.exceptions.ZonaNotFoundException;
 import com.tecno.corralito.mapper.ZonaMapper;
 import com.tecno.corralito.models.dto.productoGeneral.ZonaDto;
@@ -28,7 +28,7 @@ public class ZonaServiceImpl implements IZonaService {
     @Override
     public ZonaDto crearZona(ZonaDto zonaDto) {
         if (zonaRepository.existsByNombreZona(zonaDto.getNombreZona())) {
-            throw new ZonaAlreadyExistsException("La zona con nombre " + zonaDto.getNombreZona() + " ya existe.");
+            throw new ZonaYaExisteException("La zona con nombre " + zonaDto.getNombreZona() + " ya existe.");
         }
 
         Zona zona = zonaMapper.toEntity(zonaDto);
@@ -44,7 +44,7 @@ public class ZonaServiceImpl implements IZonaService {
         // Validar si el nombre de la zona ya existe y pertenece a otra zona
         if (zonaRepository.existsByNombreZona(zonaDto.getNombreZona()) &&
                 !zonaExistente.getNombreZona().equals(zonaDto.getNombreZona())) {
-            throw new ZonaAlreadyExistsException("La zona con nombre " + zonaDto.getNombreZona() + " ya existe.");
+            throw new ZonaYaExisteException("La zona con nombre " + zonaDto.getNombreZona() + " ya existe.");
         }
 
         zonaExistente.setNombreZona(zonaDto.getNombreZona());

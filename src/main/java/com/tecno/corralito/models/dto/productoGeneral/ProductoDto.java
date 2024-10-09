@@ -27,7 +27,7 @@ public class ProductoDto {
     private BigDecimal precioMin;
 
     @NotNull(message = "El precio máximo es obligatorio")
-    @DecimalMax(value = "10000.0", message = "El precio máximo no debe superar los 10,000")
+    @DecimalMax(value = "99000000000000", message = "El precio máximo no debe superar los 999.999.999.999.00")
     private BigDecimal precioMax;
 
     private CategoriaDto categoria;

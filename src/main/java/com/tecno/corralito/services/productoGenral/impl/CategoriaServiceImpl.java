@@ -1,7 +1,7 @@
 package com.tecno.corralito.services.productoGenral.impl;
 
 
-import com.tecno.corralito.exceptions.CategoriaAlreadyExistsException;
+import com.tecno.corralito.exceptions.CategoriaYaExisteException;
 import com.tecno.corralito.exceptions.CategoriaNotFoundException;
 import com.tecno.corralito.mapper.CategoriaMapper;
 import com.tecno.corralito.models.dto.productoGeneral.CategoriaDto;
@@ -27,7 +27,7 @@ public class CategoriaServiceImpl implements ICategoriaService {
     public CategoriaDto crearCategoria(CategoriaDto categoriaDto) {
         // Validación: Verificar si ya existe una categoría con el mismo nombre
         if (categoriaRepository.existsByNombreCategoria(categoriaDto.getNombreCategoria())) {
-            throw new CategoriaAlreadyExistsException("La categoría con nombre '" + categoriaDto.getNombreCategoria() + "' ya existe.");
+            throw new CategoriaYaExisteException("La categoría con nombre '" + categoriaDto.getNombreCategoria() + "' ya existe.");
         }
 
         // Convertir el DTO a entidad, guardar y devolver como DTO
@@ -44,7 +44,7 @@ public class CategoriaServiceImpl implements ICategoriaService {
 
         // Validación: Verificar si ya existe otra categoría con el mismo nombre
         if (categoriaRepository.existsByNombreCategoriaAndIdCategoriaNot(categoriaDto.getNombreCategoria(), idCategoria)) {
-            throw new CategoriaAlreadyExistsException("Ya existe una categoría con el nombre '" + categoriaDto.getNombreCategoria() + "'.");
+            throw new CategoriaYaExisteException("Ya existe una categoría con el nombre '" + categoriaDto.getNombreCategoria() + "'.");
         }
 
         // Actualizar los campos
