@@ -21,4 +21,7 @@ public class Zona implements Serializable {
 
     @Column(name = "nombre_zona")
     private String nombreZona;
+
+    @Column(name = "descripcion")
+    private String descripcionZona;
 }

@@ -16,4 +16,7 @@ public class ZonaDto {
 
     @NotBlank(message = "El nombre de la zona no puede estar vacío")
     private String nombreZona;
+
+    @NotBlank(message = "La descripcion de la zona no puede estar vacío")
+    private String descripcionZona;
 }

@@ -49,6 +49,7 @@ public class CategoriaServiceImpl implements ICategoriaService {
 
         // Actualizar los campos
         categoriaExistente.setNombreCategoria(categoriaDto.getNombreCategoria());
+        categoriaExistente.setDescripcionCategoria(categoriaDto.getDescripcionCategoria());
 
         // Guardar los cambios
         Categoria updatedCategoria = categoriaRepository.save(categoriaExistente);

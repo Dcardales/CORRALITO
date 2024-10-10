@@ -17,4 +17,7 @@ public class CategoriaDto {
     @NotBlank(message = "El nombre de la categoría es obligatorio")
     private String nombreCategoria;
 
+    @NotBlank(message = "La descripcion de la categoría es obligatorio")
+    private String descripcionCategoria;
+
 }

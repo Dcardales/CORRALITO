@@ -48,6 +48,8 @@ public class ZonaServiceImpl implements IZonaService {
         }
 
         zonaExistente.setNombreZona(zonaDto.getNombreZona());
+        zonaExistente.setDescripcionZona(zonaDto.getDescripcionZona());
+
         Zona updatedZona = zonaRepository.save(zonaExistente);
         return zonaMapper.toDto(updatedZona);
     }
