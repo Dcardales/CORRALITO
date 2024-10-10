@@ -2,6 +2,7 @@ package com.tecno.corralito.services.Usuario.impl;
 
 
 import com.tecno.corralito.exceptions.NacionalidadNotFoundException;
+import com.tecno.corralito.exceptions.UsuarioYaExisteException;
 import com.tecno.corralito.models.dto.Auth.*;
 import com.tecno.corralito.models.entity.enums.Estado;
 import com.tecno.corralito.models.entity.enums.RoleEnum;
@@ -93,7 +94,7 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String accessToken = jwtUtils.createToken(authentication);
-        AuthResponse authResponse = new AuthResponse(email, "User loged succesfully", accessToken, true);
+        AuthResponse authResponse = new AuthResponse(email, "Inicio de sesión exitoso", accessToken, true);
         return authResponse;
     }
 
@@ -101,11 +102,11 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         UserDetails userDetails = this.loadUserByUsername(email);
 
         if (userDetails == null) {
-            throw new BadCredentialsException("Invalid email or password");
+            throw new BadCredentialsException("Correo electronico o contraseña no válidos");
         }
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Incorrect Password");
+            throw new BadCredentialsException("Contraseña incorrecta");
         }
 
         return new UsernamePasswordAuthenticationToken(email, password, userDetails.getAuthorities());
@@ -120,7 +121,7 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         // Verificar si el correo ya está registrado
         Optional<UserEntity> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
-            return new AuthResponse(email, "El usuario ya existe", null, false);
+            throw new UsuarioYaExisteException("El usuario ya existe");
         }
 
         // Asignar el rol TURISTA automáticamente
@@ -182,7 +183,7 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         // Verificar si el correo ya está registrado
         Optional<UserEntity> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
-            return new AuthResponse(email, "El usuario ya existe", null, false);
+            throw new UsuarioYaExisteException("El usuario ya existe");
         }
 
         // Verificar si el nombre del comercio ya está registrado
@@ -245,7 +246,7 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         // Verificar si el correo ya está registrado
         Optional<UserEntity> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
-            return new AuthResponse(email, "El usuario ya existe", null, false);
+            throw new UsuarioYaExisteException("El usuario ya existe");
         }
 
         // Asignar el rol ENTE_REGULADOR automáticamente
@@ -301,7 +302,7 @@ public class AuthServiceImpl implements UserDetailsService, IAuthService {
         // Verificar si el correo ya está registrado
         Optional<UserEntity> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
-            return new AuthResponse(email, "El usuario ya existe", null, false);
+            throw new UsuarioYaExisteException("El usuario ya existe");
         }
 
         // Asignar el rol ADMIN automáticamente

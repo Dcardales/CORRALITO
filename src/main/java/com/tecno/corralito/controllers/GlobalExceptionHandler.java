@@ -1,6 +1,7 @@
 package com.tecno.corralito.controllers;
 
 import com.tecno.corralito.exceptions.*;
+import com.tecno.corralito.models.response.AuthResponse;
 import com.tecno.corralito.models.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,9 +81,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UsuarioYaExisteException.class)
-    public ResponseEntity<ErrorResponse> handleUsuarioAlreadyExistsException(UsuarioYaExisteException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    public ResponseEntity<AuthResponse> handleUsuarioAlreadyExistsException(UsuarioYaExisteException ex) {
+        AuthResponse authResponse = new AuthResponse(null, ex.getMessage(), null, false);
+        return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ZonaNotFoundException.class)

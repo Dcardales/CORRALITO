@@ -61,7 +61,7 @@ public class ProductoServiceImpl implements IProductoService {
 
         // Actualizar los campos del producto existente usando el mapper
         Producto productoActualizado = productoMapper.toEntity(productoDto);
-        productoActualizado.setIdProducto(id); // Asegúrate de que la entidad tenga el ID correcto
+        productoActualizado.setIdProducto(id);
 
         Producto productoGuardado = productoRepository.save(productoActualizado);
         return productoMapper.toDto(productoGuardado);
