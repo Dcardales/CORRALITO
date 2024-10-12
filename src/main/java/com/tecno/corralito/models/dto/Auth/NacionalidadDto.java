@@ -1,4 +1,4 @@
-package com.tecno.corralito.models.dto;
+package com.tecno.corralito.models.dto.Auth;
 
 
 import lombok.*;

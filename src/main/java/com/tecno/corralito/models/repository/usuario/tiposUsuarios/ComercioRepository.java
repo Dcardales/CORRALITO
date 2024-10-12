@@ -1,7 +1,7 @@
-package com.tecno.corralito.models.repository.tiposUsuarios;
+package com.tecno.corralito.models.repository.usuario.tiposUsuarios;
 
 
-import com.tecno.corralito.models.entity.tiposUsuarios.Comercio;
+import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

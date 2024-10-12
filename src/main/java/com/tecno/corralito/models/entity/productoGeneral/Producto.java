@@ -24,10 +24,10 @@ public class Producto implements Serializable {
     @Column(name = "nombre_producto")
     private String nombreProducto;
 
-    @Column(name = "precio_min")
+    @Column(name = "precio_min", precision = 10, scale = 3)
     private BigDecimal precioMin;
 
-    @Column(name = "precio_max")
+    @Column(name = "precio_max", precision = 10, scale = 3)
     private BigDecimal precioMax;
 
     @ManyToOne(fetch = FetchType.LAZY)

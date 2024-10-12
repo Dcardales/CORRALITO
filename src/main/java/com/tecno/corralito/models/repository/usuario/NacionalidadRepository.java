@@ -1,4 +1,4 @@
-package com.tecno.corralito.models.repository.tiposUsuarios;
+package com.tecno.corralito.models.repository.usuario;
 
 
 import com.tecno.corralito.models.entity.usuario.Nacionalidad;

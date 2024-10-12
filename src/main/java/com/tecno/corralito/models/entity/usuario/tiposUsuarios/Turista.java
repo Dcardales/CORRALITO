@@ -1,4 +1,4 @@
-package com.tecno.corralito.models.entity.tiposUsuarios;
+package com.tecno.corralito.models.entity.usuario.tiposUsuarios;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

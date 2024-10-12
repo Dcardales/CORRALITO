@@ -2,10 +2,10 @@ package com.tecno.corralito.models.entity.usuario;
 
 
 import com.tecno.corralito.models.entity.enums.Estado;
-import com.tecno.corralito.models.entity.tiposUsuarios.Administrador;
-import com.tecno.corralito.models.entity.tiposUsuarios.Comercio;
-import com.tecno.corralito.models.entity.tiposUsuarios.EnteRegulador;
-import com.tecno.corralito.models.entity.tiposUsuarios.Turista;
+import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Administrador;
+import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
+import com.tecno.corralito.models.entity.usuario.tiposUsuarios.EnteRegulador;
+import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Turista;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
