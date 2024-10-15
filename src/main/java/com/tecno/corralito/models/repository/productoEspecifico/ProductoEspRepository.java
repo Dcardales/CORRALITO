@@ -7,5 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProductoEspRepository extends JpaRepository<ProductoEsp, Integer> {
+
     List<ProductoEsp> findByEstado(Estado estado);
+
+    List<ProductoEsp> findByComercioId(Integer comercioId);
+
 }

@@ -1,12 +1,21 @@
 package com.tecno.corralito.services.productoEspecifico.impl;
 
+import com.tecno.corralito.exceptions.CategoriaNotFoundException;
 import com.tecno.corralito.exceptions.ProductoNotFoundException;
+import com.tecno.corralito.exceptions.ZonaNotFoundException;
 import com.tecno.corralito.mapper.ProductoEspMapper;
 import com.tecno.corralito.models.dto.productoEspecifico.CreateProductoEsp;
+import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspExistenteDto;
+import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
+import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.entity.productoGeneral.Producto;
+import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.repository.productoEspecifico.ProductoEspRepository;
+import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ProductoRepository;
+import com.tecno.corralito.models.repository.productoGeneral.ZonaRepository;
+import com.tecno.corralito.models.repository.usuario.tiposUsuarios.ComercioRepository;
 import com.tecno.corralito.services.productoEspecifico.IProductoEspService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +33,15 @@ public class ProductoEspServiceImpl implements IProductoEspService {
     private ProductoRepository productoRepository;
 
     @Autowired
+    private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private ZonaRepository zonaRepository;
+
+    @Autowired
+    private ComercioRepository comercioRepository;
+
+    @Autowired
     private ProductoEspMapper productoEspMapper;
 
     @Override
@@ -39,23 +57,40 @@ public class ProductoEspServiceImpl implements IProductoEspService {
     }
 
     @Override
-    public CreateProductoEsp crearProductoEspecifico(CreateProductoEsp createProductoEsp) {
-        // Buscar el producto general asociado
-        Producto producto = productoRepository.findById(createProductoEsp.getProductoId())
-                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado."));
+    public ProductoEsp crearProductoEspExistente(ProductoEspExistenteDto dto, Integer idComercio) {
+        // Buscar el producto en el repositorio
+        Producto producto = productoRepository.findById(dto.getIdProducto())
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado"));
 
-        // Mostrar el rango de precios
-        mostrarRangoPrecios(producto);
+        // Buscar la zona
+        Zona zona = zonaRepository.findById(dto.getIdZona())
+                .orElseThrow(() -> new ZonaNotFoundException("Zona no encontrada"));
 
-        // Mapear el DTO a la entidad
-        ProductoEsp productoEsp = productoEspMapper.toEntity(createProductoEsp);
+        // Mapear el DTO a ProductoEsp
+        ProductoEsp productoEsp = productoEspMapper.toEntity(dto, producto, zona);
+        productoEsp.setComercio(comercioRepository.findById(idComercio).get());
 
-        // Asociar producto general
-        productoEsp.setProducto(producto);
-
-        // Guardar el producto específico
-        return productoEspMapper.toDto(productoEspRepository.save(productoEsp));
+        // Guardar el ProductoEsp
+        return productoEspRepository.save(productoEsp);
     }
+
+    @Override
+    public ProductoEsp crearProductoEspPersonalizado(ProductoEspPersonalizadoDto dto, Integer idComercio) {
+        // Crear el producto personalizado
+        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+                .orElseThrow(() -> new CategoriaNotFoundException("Categoría no encontrada"));
+
+        // Buscar la zona
+        Zona zona = zonaRepository.findById(dto.getIdZona())
+                .orElseThrow(() -> new ZonaNotFoundException("Zona no encontrada"));
+
+        // Mapear el DTO a ProductoEsp
+        ProductoEsp productoEsp = productoEspMapper.toEntityPersonalizado(dto, categoria, zona, comercioRepository.findById(idComercio).get());
+
+        // Guardar el ProductoEsp
+        return productoEspRepository.save(productoEsp);
+    }
+
 
     // Método para mostrar el rango de precios
     private void mostrarRangoPrecios(Producto producto) {
