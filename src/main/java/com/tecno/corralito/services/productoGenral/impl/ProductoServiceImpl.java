@@ -27,7 +27,7 @@ public class ProductoServiceImpl implements IProductoService {
     public ProductoDto crearProducto(ProductoDto productoDto) {
 
         // Validar que no exista un producto con el mismo nombre en la misma zona
-        if (productoRepository.existsByNombreProductoAndZonaIdZona(productoDto.getNombreProducto(), productoDto.getZona().getIdZona())) {
+        if (productoRepository.existsByNombreProductoAndZonaIdZona(productoDto.getNombreProducto(), productoDto.getIdZona())) {
             throw new ProductoYaExisteException("El nombre del producto ya existe en la misma zona");
         }
 
@@ -50,13 +50,13 @@ public class ProductoServiceImpl implements IProductoService {
                 .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado con id: " + id));
 
         // Validar que no exista un producto con el mismo nombre en la misma zona
-        if (productoRepository.existsByNombreProductoAndZonaIdZona(productoDto.getNombreProducto(), productoDto.getZona().getIdZona())) {
+        if (productoRepository.existsByNombreProductoAndZonaIdZona(productoDto.getNombreProducto(), productoDto.getIdZona())) {
             throw new ProductoYaExisteException("El nombre del producto ya existe en la misma zona");
         }
 
         // Validar que el precio máximo sea mayor que el precio mínimo
         if (productoDto.getPrecioMax().compareTo(productoDto.getPrecioMin()) <= 0) {
-            throw new PrecioInvalidoException ("El precio máximo debe ser mayor que el precio mínimo");
+            throw new PrecioInvalidoException("El precio máximo debe ser mayor que el precio mínimo");
         }
 
         // Actualizar los campos del producto existente usando el mapper

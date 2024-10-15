@@ -46,17 +46,30 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.DELETE, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
                     http.requestMatchers(HttpMethod.GET, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
+                    // Endpoints de Zonas (protegidos)
+                    http.requestMatchers(HttpMethod.POST, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.GET, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+
                     // Endpoints de Producto (protegidos)
                     http.requestMatchers(HttpMethod.POST, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
                     http.requestMatchers(HttpMethod.PUT, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
                     http.requestMatchers(HttpMethod.DELETE, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
                     http.requestMatchers(HttpMethod.GET, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
-                    // Endpoints de Zona (protegidos)
-                    http.requestMatchers(HttpMethod.POST, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.PUT, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.DELETE, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.GET, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    // Endpoints de Producto Especifico (protegidos)
+                    http.requestMatchers(HttpMethod.POST, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers(HttpMethod.PUT, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers(HttpMethod.GET, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
+
+                    // Endpoints de Comentarios (protegidos)
+                    http.requestMatchers(HttpMethod.POST, "/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.PUT, "/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/comentarios**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.GET, "/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
+
 
                     // Denegar todos los demás
                     http.anyRequest().denyAll();
