@@ -2,15 +2,16 @@ package com.tecno.corralito.services.productoEspecifico.impl;
 
 import com.tecno.corralito.exceptions.CategoriaNotFoundException;
 import com.tecno.corralito.exceptions.ProductoNotFoundException;
+import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.ZonaNotFoundException;
 import com.tecno.corralito.mapper.ProductoEspMapper;
-import com.tecno.corralito.models.dto.productoEspecifico.CreateProductoEsp;
 import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspExistenteDto;
 import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
 import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.entity.productoGeneral.Producto;
 import com.tecno.corralito.models.entity.productoGeneral.Zona;
+import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
 import com.tecno.corralito.models.repository.productoEspecifico.ProductoEspRepository;
 import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ProductoRepository;
@@ -44,17 +45,6 @@ public class ProductoEspServiceImpl implements IProductoEspService {
     @Autowired
     private ProductoEspMapper productoEspMapper;
 
-    @Override
-    public CreateProductoEsp obtenerProductoEspecifico(Integer idProductoEsp) {
-        ProductoEsp productoEsp = productoEspRepository.findById(idProductoEsp)
-                .orElseThrow(() -> new ProductoNotFoundException("Producto especifico no encontrado"));
-        return productoEspMapper.toDto(productoEsp);
-    }
-
-    @Override
-    public List<CreateProductoEsp> listarProductosEspecificos() {
-        return productoEspMapper.toDtoList(productoEspRepository.findAll());
-    }
 
     @Override
     public ProductoEsp crearProductoEspExistente(ProductoEspExistenteDto dto, Integer idComercio) {
@@ -102,8 +92,33 @@ public class ProductoEspServiceImpl implements IProductoEspService {
 
 
     @Override
+    public ProductoEsp obtenerProductoEspecifico(Integer idProductoEsp) {
+        return productoEspRepository.findById(idProductoEsp)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto específico no encontrado con el ID: " + idProductoEsp));
+    }
+
+    @Override
+    public List<ProductoEsp> listarProductosEspecificos(Integer idComercio) {
+        Comercio comercio = comercioRepository.findById(idComercio)
+                .orElseThrow(() -> new ResourceNotFoundException("Comercio no encontrado con el ID: " + idComercio));
+
+        return productoEspRepository.findByComercioId(idComercio);
+    }
+
+    // Listar productos por zona
+    public List<ProductoEsp> listarProductosPorZona(Integer idZona) {
+        Zona zona = zonaRepository.findById(idZona)
+                .orElseThrow(() -> new ResourceNotFoundException("Zona no encontrada con el ID: " + idZona));
+
+        return productoEspRepository.findByZona(zona);
+    }
+
+    @Override
     public void eliminarProductoEspecifico(Integer idProductoEsp) {
-        productoEspRepository.deleteById(idProductoEsp);
+        ProductoEsp productoEsp = productoEspRepository.findById(idProductoEsp)
+                .orElseThrow(() -> new ResourceNotFoundException("Producto específico no encontrado con el ID: " + idProductoEsp));
+
+        productoEspRepository.delete(productoEsp);
     }
 
 }
