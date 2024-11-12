@@ -1,6 +1,7 @@
 package com.tecno.corralito.models.entity.usuario.tiposUsuarios;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tecno.corralito.models.entity.usuario.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,7 @@ public class Comercio {
     private String telefono;
 
     @OneToOne
+    @JsonManagedReference
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private UserEntity usuario;
 }

@@ -1,4 +1,4 @@
-package com.tecno.corralito.models.dto.Auth;
+package com.tecno.corralito.models.dto.tiposUsuario.administrador;
 
 import com.tecno.corralito.models.entity.enums.TipoIdentificacion;
 import jakarta.validation.constraints.Email;
@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class AuthCreateAdminRequest {
+public class CreateAdminRequest {
 
     @Email(message = "El correo debe tener un formato válido")
     @NotBlank(message = "El email no puede estar vacío")

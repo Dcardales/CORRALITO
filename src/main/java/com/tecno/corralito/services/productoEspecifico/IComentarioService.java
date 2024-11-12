@@ -9,4 +9,8 @@ public interface IComentarioService {
     List<ComentarioDto> obtenerComentariosPorProductoEspecifico(Integer idProductoEsp);
 
     ComentarioDto agregarComentario(Integer idProductoEsp, ComentarioDto comentarioDto);
+
+    ComentarioDto actualizarComentario(Integer idComentario, ComentarioDto comentarioDto);
+
+    void eliminarComentario(Integer idComentario);
 }

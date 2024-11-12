@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @ToString
 @Builder
-public class ErrorResponse {
+public class ErrorResponse implements Serializable {
     private int statusCode;
     private String message;
 

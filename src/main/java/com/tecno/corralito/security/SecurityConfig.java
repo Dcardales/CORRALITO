@@ -2,12 +2,11 @@ package com.tecno.corralito.security;
 
 
 import com.tecno.corralito.security.filter.JwtTokenValidator;
-import com.tecno.corralito.services.Usuario.impl.AuthServiceImpl;
+import com.tecno.corralito.services.Usuarios.impl.AuthServiceImpl;
 import com.tecno.corralito.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
 
 @Configuration
 @EnableWebSecurity
@@ -29,47 +30,42 @@ public class SecurityConfig {
     private JwtUtils jwtUtils;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider authenticationProvider) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider authenticationProvider) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);  // Permitir credenciales
+                    config.addAllowedOrigin("http://localhost:4200");
+                    config.addAllowedHeader("*");  // Permitir todos los encabezados
+                    config.addAllowedMethod("*");  // Permitir todos los métodos
+                    return config;
+                }))  // Configuración CORS directamente aquí
+                .csrf(AbstractHttpConfigurer::disable) // Desactiva CSRF
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(http -> {
+                .authorizeRequests(http -> {
                     // Endpoints públicos
-                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    http.requestMatchers("/auth/**").permitAll();
 
                     // Swagger público
                     http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();
 
+                    // Endpoints de administrador (protegidos)
+                    http.requestMatchers("/api/administradores/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+
                     // Endpoints de Categoría (protegidos)
-                    http.requestMatchers(HttpMethod.POST, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.PUT, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.DELETE, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.GET, "api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers("/api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
                     // Endpoints de Zonas (protegidos)
-                    http.requestMatchers(HttpMethod.POST, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.PUT, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.DELETE, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.GET, "api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers("/api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
                     // Endpoints de Producto (protegidos)
-                    http.requestMatchers(HttpMethod.POST, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.PUT, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.DELETE, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
-                    http.requestMatchers(HttpMethod.GET, "api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers("/api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
                     // Endpoints de Producto Especifico (protegidos)
-                    http.requestMatchers(HttpMethod.POST, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
-                    http.requestMatchers(HttpMethod.PUT, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
-                    http.requestMatchers(HttpMethod.DELETE, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
-                    http.requestMatchers(HttpMethod.GET, "/api/producto-especifico/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers("/api/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
 
                     // Endpoints de Comentarios (protegidos)
-                    http.requestMatchers(HttpMethod.POST, "/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
-                    http.requestMatchers(HttpMethod.PUT, "/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
-                    http.requestMatchers(HttpMethod.DELETE, "/api/comentarios**").hasAnyRole("ADMIN", "TURISTA");
-                    http.requestMatchers(HttpMethod.GET, "/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
-
+                    http.requestMatchers("/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
 
                     // Denegar todos los demás
                     http.anyRequest().denyAll();

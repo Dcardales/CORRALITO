@@ -1,39 +1,36 @@
 package com.tecno.corralito.mapper;
 
-import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspExistenteDto;
+
 import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
-import com.tecno.corralito.models.entity.productoGeneral.Categoria;
-import com.tecno.corralito.models.entity.productoGeneral.Producto;
-import com.tecno.corralito.models.entity.productoGeneral.Zona;
-import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
+import com.tecno.corralito.models.response.ProductoEspResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 
 @Mapper(componentModel = "spring")
 public interface ProductoEspMapper {
 
-    @Mapping(source = "productoEspExistenteDto.idProducto", target = "producto.idProducto")
-    @Mapping(source = "productoEspExistenteDto.precio", target = "precio")
-    @Mapping(source = "productoEspExistenteDto.descripcion", target = "descripcion")
-    @Mapping(source = "productoEspExistenteDto.estado", target = "estado")
-    @Mapping(source = "zona.idZona", target = "zona.idZona")  // Aquí corregimos
-    ProductoEsp mapToEntity(ProductoEspExistenteDto productoEspExistenteDto, Producto producto, Zona zona);
+    ProductoEspMapper INSTANCE = Mappers.getMapper(ProductoEspMapper.class);
 
+    // Mapeo de ProductoEsp a ProductoEspResponse
+    @Mapping(target = "comercio.id", source = "comercio.id")
+    @Mapping(target = "comercio.nombreComercio", source = "comercio.nombreComercio")
+    @Mapping(target = "zona.idZona", source = "zona.idZona")
+    @Mapping(target = "zona.nombreZona", source = "zona.nombreZona")
+    @Mapping(target = "categoria.idCategoria", source = "categoria.idCategoria")
+    @Mapping(target = "categoria.nombreCategoria", source = "categoria.nombreCategoria")
+    ProductoEspResponse toProductoEspResponse(ProductoEsp productoEsp);
 
-    @Mapping(source = "producto.idProducto", target = "producto.idProducto")
-    @Mapping(source = "productoEspExistenteDto.precio", target = "precio")
-    @Mapping(source = "productoEspExistenteDto.descripcion", target = "descripcion")
-    @Mapping(source = "productoEspExistenteDto.estado", target = "estado")
-    @Mapping(source = "zona.idZona", target = "Zona.idZona")
-    ProductoEsp toEntity(ProductoEspExistenteDto productoEspExistenteDto, Producto producto, Zona zona);
+    // Mapeo del DTO a la entidad ProductoEsp
+    @Mapping(target = "nombreEspecifico", source = "nombreProducto")
+    ProductoEsp toProductoEsp(ProductoEspPersonalizadoDto dto);
 
-    @Mapping(source = "ProductoEspPersonalizadoDto.nombreProducto", target = "nombreProducto")
-    @Mapping(source = "ProductoEspPersonalizadoDto.precio", target = "precio")
-    @Mapping(source = "ProductoEspPersonalizadoDto.descripcion", target = "descripcion")
-    @Mapping(source = "ProductoEspPersonalizadoDto.estado", target = "estado")
-    @Mapping(source = "zona.idZona", target = "zona.idZona")
-    ProductoEsp toEntityPersonalizado(ProductoEspPersonalizadoDto productoEspPersonalizadoDto, Categoria categoria, Zona zona, Comercio comercio);
+    // Mapeo inverso para convertir la entidad a DTO
+    @Mapping(target = "nombreProducto", source = "nombreEspecifico")
+    @Mapping(target = "idZona", source = "zona.idZona")
+    @Mapping(target = "idCategoria", source = "categoria.idCategoria")
+    ProductoEspPersonalizadoDto toDto(ProductoEsp productoEsp);
 }
 

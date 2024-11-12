@@ -3,7 +3,7 @@ package com.tecno.corralito.models.entity.productoEspecifico;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tecno.corralito.models.entity.enums.Estado;
-import com.tecno.corralito.models.entity.productoGeneral.Producto;
+import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
 import jakarta.persistence.*;
@@ -27,10 +27,6 @@ public class ProductoEsp implements Serializable {
     @Column(name = "id_prod_esp")
     private Integer idProductoEsp;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_producto")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Producto producto;
 
     @Column(name = "nombreEsp")
     private String nombreEspecifico;
@@ -55,9 +51,14 @@ public class ProductoEsp implements Serializable {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Zona zona;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Categoria categoria;
+
     @OneToMany(mappedBy = "productoEsp", cascade = CascadeType.ALL)
-    @JoinColumn(name = "comentario")
-    private List<Comentario> comentario;
+    private List<Comentario> comentarios;
 
 }
+
 

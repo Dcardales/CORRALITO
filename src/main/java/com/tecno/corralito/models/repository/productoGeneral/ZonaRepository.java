@@ -10,4 +10,5 @@ public interface ZonaRepository extends JpaRepository<Zona, Integer> {
     Optional<Zona> findByNombreZona(String nombreZona);
 
     boolean existsByNombreZona(String nombreZona);
+
 }

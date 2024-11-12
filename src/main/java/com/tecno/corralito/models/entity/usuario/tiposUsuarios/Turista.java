@@ -47,6 +47,7 @@ public class Turista {
     @OneToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private UserEntity usuario;
+
 }
 
 

@@ -1,5 +1,6 @@
 package com.tecno.corralito.models.dto.productoEspecifico;
 
+import com.tecno.corralito.models.dto.tiposUsuario.turista.TuristaDto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
@@ -23,7 +24,7 @@ public class ComentarioDto implements Serializable {
     @Max(value = 5, message = "La valoración máxima es 5")
     private int valoracion;
 
-    private String nombreTurista;
+    private TuristaDto nombreTurista;
 
     private LocalDateTime fecha;
 

@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comentarios")
+@RequestMapping("/api/comentarios/")
 public class ComentarioController {
 
     @Autowired
     private IComentarioService comentarioService;
 
+    // Agregar un comentario
     @PreAuthorize("hasRole('ADMIN') or hasRole('TURISTA')")
     @PostMapping("/{idProductoEsp}")
     public ResponseEntity<MensajeResponse> agregarComentario(
@@ -34,7 +35,7 @@ public class ComentarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-
+    // Obtener comentarios por producto específico
     @PreAuthorize("hasRole('ADMIN') or hasRole('TURISTA')")
     @GetMapping("/{idProductoEsp}")
     public ResponseEntity<MensajeResponse> obtenerComentariosPorProductoEspecifico(
@@ -49,5 +50,34 @@ public class ComentarioController {
 
         return ResponseEntity.ok(response);
     }
-}
 
+    // Actualizar un comentario (solo si el usuario es el autor)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TURISTA')")
+    @PutMapping("/{idComentario}")
+    public ResponseEntity<MensajeResponse> actualizarComentario(
+            @PathVariable Integer idComentario,
+            @RequestBody ComentarioDto comentarioDto) {
+
+        ComentarioDto comentarioActualizado = comentarioService.actualizarComentario(idComentario, comentarioDto);
+
+        MensajeResponse response = MensajeResponse.builder()
+                .mensaje("Comentario actualizado exitosamente")
+                .object(comentarioActualizado)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    // Eliminar un comentario (solo si el usuario es el autor)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TURISTA')")
+    @DeleteMapping("/{idComentario}")
+    public ResponseEntity<MensajeResponse> eliminarComentario(@PathVariable Integer idComentario) {
+        comentarioService.eliminarComentario(idComentario);
+        MensajeResponse response = MensajeResponse.builder()
+                .mensaje("Comentario eliminado exitosamente")
+                .build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+    }
+
+
+}

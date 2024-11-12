@@ -8,6 +8,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,7 +32,7 @@ public class Comentario implements Serializable {
     @Column(name = "fecha")
     private LocalDate fecha;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_prod_esp")
     private ProductoEsp productoEsp;
 
@@ -39,5 +40,11 @@ public class Comentario implements Serializable {
     @JoinColumn(name = "id_turista")
     private Turista turista;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.fecha == null) {
+            this.fecha = LocalDate.now();
+        }
+    }
 }
 

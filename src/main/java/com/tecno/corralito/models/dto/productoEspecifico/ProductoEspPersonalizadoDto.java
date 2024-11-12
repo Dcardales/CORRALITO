@@ -1,5 +1,6 @@
 package com.tecno.corralito.models.dto.productoEspecifico;
 
+import com.tecno.corralito.models.dto.tiposUsuario.comercio.ComercioDto;
 import com.tecno.corralito.models.entity.enums.Estado;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.math.BigDecimal;
-
 
 @Data
 @NoArgsConstructor
@@ -20,8 +20,6 @@ public class ProductoEspPersonalizadoDto {
     @Size(min = 3, max = 100)
     private String nombreProducto;
 
-    private Integer idCategoria;
-
     @NotNull
     @DecimalMin("0.01")
     private BigDecimal precio;
@@ -32,5 +30,10 @@ public class ProductoEspPersonalizadoDto {
     private Estado estado;
 
     private Integer idZona;
+
+    private Integer idCategoria;
+
+    private ComercioDto comercio;
+
 
 }
