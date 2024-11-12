@@ -50,9 +50,11 @@ public class SecurityConfig {
                     http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();
 
                     // Endpoints de administrador (protegidos)
-                    http.requestMatchers("/api/administradores/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers("/api/administradores/**").hasAnyRole("ADMIN");
 
                     // Endpoints de Categoría (protegidos)
+
+
                     http.requestMatchers("/api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
                     // Endpoints de Zonas (protegidos)
