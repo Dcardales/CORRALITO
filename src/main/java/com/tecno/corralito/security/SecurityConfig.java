@@ -2,7 +2,7 @@ package com.tecno.corralito.security;
 
 
 import com.tecno.corralito.security.filter.JwtTokenValidator;
-import com.tecno.corralito.services.Usuarios.impl.AuthServiceImpl;
+import com.tecno.corralito.services.usuarios.auth.AuthServiceImpl;
 import com.tecno.corralito.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

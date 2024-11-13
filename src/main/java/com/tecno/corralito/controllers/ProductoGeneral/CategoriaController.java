@@ -2,8 +2,8 @@ package com.tecno.corralito.controllers.ProductoGeneral;
 
 
 import com.tecno.corralito.models.dto.productoGeneral.CategoriaDto;
-import com.tecno.corralito.models.response.MensajeResponse;
-import com.tecno.corralito.services.productoGenral.ICategoriaService;
+import com.tecno.corralito.models.response.general.MensajeResponse;
+import com.tecno.corralito.services.productoGenral.categoria.ICategoriaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -2,8 +2,8 @@ package com.tecno.corralito.controllers.ProductoGeneral;
 
 
 import com.tecno.corralito.models.dto.productoGeneral.ZonaDto;
-import com.tecno.corralito.models.response.MensajeResponse;
-import com.tecno.corralito.services.productoGenral.IZonaService;
+import com.tecno.corralito.models.response.general.MensajeResponse;
+import com.tecno.corralito.services.productoGenral.zona.IZonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

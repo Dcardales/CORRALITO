@@ -1,9 +1,9 @@
 package com.tecno.corralito.mapper;
 
 
-import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspPersonalizadoDto;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
-import com.tecno.corralito.models.response.ProductoEspResponse;
+import com.tecno.corralito.models.response.productoEspesifico.productoEsp.ProductoEspResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

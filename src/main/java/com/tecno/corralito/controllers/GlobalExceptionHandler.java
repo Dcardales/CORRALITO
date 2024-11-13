@@ -1,8 +1,8 @@
 package com.tecno.corralito.controllers;
 
 import com.tecno.corralito.exceptions.*;
-import com.tecno.corralito.models.response.AuthResponse;
-import com.tecno.corralito.models.response.ErrorResponse;
+import com.tecno.corralito.models.response.auth.AuthResponse;
+import com.tecno.corralito.models.response.general.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

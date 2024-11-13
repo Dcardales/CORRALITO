@@ -1,8 +1,8 @@
 package com.tecno.corralito.controllers.productoEspecifico;
 
 import com.tecno.corralito.models.dto.productoEspecifico.ComentarioDto;
-import com.tecno.corralito.models.response.MensajeResponse;
-import com.tecno.corralito.services.productoEspecifico.IComentarioService;
+import com.tecno.corralito.models.response.general.MensajeResponse;
+import com.tecno.corralito.services.productoEspecifico.comentario.IComentarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

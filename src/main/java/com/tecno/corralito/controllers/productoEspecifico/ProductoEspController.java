@@ -1,11 +1,11 @@
 package com.tecno.corralito.controllers.productoEspecifico;
 
 import com.tecno.corralito.mapper.ProductoEspMapper;
-import com.tecno.corralito.models.dto.productoEspecifico.ProductoEspPersonalizadoDto;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
-import com.tecno.corralito.models.response.MensajeResponse;
-import com.tecno.corralito.models.response.ProductoEspResponse;
-import com.tecno.corralito.services.productoEspecifico.IProductoEspService;
+import com.tecno.corralito.models.response.general.MensajeResponse;
+import com.tecno.corralito.models.response.productoEspesifico.productoEsp.ProductoEspResponse;
+import com.tecno.corralito.services.productoEspecifico.productoEsp.IProductoEspService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

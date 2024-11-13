@@ -9,7 +9,7 @@ import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.entity.usuario.PermissionEntity;
 import com.tecno.corralito.models.entity.usuario.RoleEntity;
 import com.tecno.corralito.models.entity.usuario.UserEntity;
-import com.tecno.corralito.models.repository.PermissionRepository;
+import com.tecno.corralito.models.repository.usuario.PermissionRepository;
 import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ProductoRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ZonaRepository;
