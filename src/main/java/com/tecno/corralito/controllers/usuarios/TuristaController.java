@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class TuristaController {
     @Autowired
    private ITuristaService turistaService;
 
+    @PreAuthorize("hasRole('TURISTA')")
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerTurista(@Valid @RequestBody AuthCreateTuristaRequest turistaRequest, BindingResult result) {
         if (result.hasErrors()) {
@@ -40,7 +42,7 @@ public class TuristaController {
         return ResponseEntity.ok(response);
     }
 
-    // Actualización de Turista
+    @PreAuthorize("hasRole('TURISTA')")
     @PutMapping("/{id}")
     public ResponseEntity<Turista> updateTurista(@PathVariable Integer id, @Valid @RequestBody TuristaUpdateRequest turistaUpdateRequest, BindingResult result) {
         if (result.hasErrors()) {
@@ -55,7 +57,7 @@ public class TuristaController {
         return ResponseEntity.ok(updatedTurista);
     }
 
-    // Eliminación de Turista
+    @PreAuthorize("hasRole('TURISTA')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTurista(@PathVariable Integer id) {
         turistaService.deleteTurista(id);
@@ -63,6 +65,7 @@ public class TuristaController {
     }
 
 
+    @PreAuthorize("hasRole('TURISTA')")
     @PostMapping("/{id}/reset-password")
     public ResponseEntity<String> resetPassword(@PathVariable Integer id, @RequestBody @Valid PasswordResetRequest passwordResetRequest, BindingResult result) {
         if (result.hasErrors()) {

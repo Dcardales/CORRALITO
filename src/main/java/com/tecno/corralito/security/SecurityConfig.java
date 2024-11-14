@@ -52,9 +52,9 @@ public class SecurityConfig {
                     // Endpoints de administrador (protegidos)
                     http.requestMatchers("/api/administradores/**").hasAnyRole("ADMIN");
 
+                    http.requestMatchers("/api/turistas/**").hasAnyRole("TURISTA");
+
                     // Endpoints de Categoría (protegidos)
-
-
                     http.requestMatchers("/api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
                     // Endpoints de Zonas (protegidos)
