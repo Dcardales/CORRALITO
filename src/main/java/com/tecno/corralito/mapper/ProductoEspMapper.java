@@ -2,6 +2,8 @@ package com.tecno.corralito.mapper;
 
 
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspSimple;
+import com.tecno.corralito.models.entity.productoEspecifico.Comentario;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
 import com.tecno.corralito.models.response.productoEspesifico.productoEsp.ProductoEspResponse;
 import org.mapstruct.Mapper;
@@ -32,5 +34,27 @@ public interface ProductoEspMapper {
     @Mapping(target = "idZona", source = "zona.idZona")
     @Mapping(target = "idCategoria", source = "categoria.idCategoria")
     ProductoEspPersonalizadoDto toDto(ProductoEsp productoEsp);
+
+    // Mapeo de ProductoEsp a ProductoEspSimple
+    @Mapping(target = "nombreEspecifico", source = "nombreEspecifico")
+    @Mapping(target = "precio", source = "precio")
+    @Mapping(target = "descripcion", source = "descripcion")
+    @Mapping(target = "valoracionPromedio", expression = "java(calcularValoracionPromedio(productoEsp))")
+    @Mapping(target = "nombreComercio", source = "comercio.nombreComercio")
+    ProductoEspSimple toProductoEspSimple(ProductoEsp productoEsp);
+
+    // Método auxiliar para calcular el promedio de valoraciones
+    default int calcularValoracionPromedio(ProductoEsp productoEsp) {
+        if (productoEsp.getComentarios() == null || productoEsp.getComentarios().isEmpty()) {
+            return 0; // Sin valoraciones
+        }
+        // Sumar todas las valoraciones y calcular el promedio
+        double promedio = productoEsp.getComentarios().stream()
+                .mapToInt(Comentario::getValoracion)
+                .average()
+                .orElse(0.0); // Valor por defecto si no hay comentarios
+        return (int) Math.round(promedio); // Redondear al entero más cercano
+    }
 }
+
 

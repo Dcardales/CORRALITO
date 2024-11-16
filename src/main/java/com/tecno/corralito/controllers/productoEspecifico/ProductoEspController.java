@@ -2,6 +2,7 @@ package com.tecno.corralito.controllers.productoEspecifico;
 
 import com.tecno.corralito.mapper.ProductoEspMapper;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspSimple;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
 import com.tecno.corralito.models.response.general.MensajeResponse;
 import com.tecno.corralito.models.response.productoEspesifico.productoEsp.ProductoEspResponse;
@@ -40,11 +41,33 @@ public class ProductoEspController {
         return ResponseEntity.ok(mensajeResponse);
     }
 
+    // Listar todos los productos específicos
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/productos")
+    public ResponseEntity<MensajeResponse> listarTodosLosProductosEspecificos() {
+        // Obtener la lista de productos desde el servicio
+        List<ProductoEsp> productos = productoEspService.listarTodosLosProductosEspecificos();
+
+        // Mapear cada producto a ProductoEspSimple
+        List<ProductoEspSimple> productoSimples = productos.stream()
+                .map(productoEspMapper::toProductoEspSimple)
+                .collect(Collectors.toList());
+
+        // Crear la respuesta personalizada
+        MensajeResponse mensajeResponse = MensajeResponse.builder()
+                .mensaje("Lista de todos los productos específicos obtenida exitosamente")
+                .object(productoSimples)
+                .build();
+
+        // Devolver la respuesta
+        return ResponseEntity.ok(mensajeResponse);
+    }
+
     // Listar productos específicos por ID de comercio
     @PreAuthorize("hasRole('ADMIN') or hasRole('COMERCIO')")
     @GetMapping("/comercio/{idComercio}")
     public ResponseEntity<MensajeResponse> listarProductosEspecificosPorComercio(@PathVariable Integer idComercio) {
-        List<ProductoEsp> productos = productoEspService.listarProductosEspecificos(idComercio);
+        List<ProductoEsp> productos = productoEspService.listarProductosEspecificosComercio(idComercio);
         List<ProductoEspResponse> productoResponses = productos.stream()
                 .map(productoEspMapper::toProductoEspResponse)
                 .collect(Collectors.toList());

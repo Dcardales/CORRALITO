@@ -9,7 +9,9 @@ public interface IProductoEspService {
 
     ProductoEsp obtenerProductoEspecifico(Integer idProductoEsp);
 
-    List<ProductoEsp> listarProductosEspecificos(Integer idComercio);
+    List<ProductoEsp> listarProductosEspecificosComercio(Integer idComercio);
+
+    List<ProductoEsp> listarTodosLosProductosEspecificos();
 
     void eliminarProductoEspecifico(Integer idProductoEsp);
 

@@ -53,8 +53,13 @@ public class ProductoEspServiceImpl implements IProductoEspService {
     }
 
     @Override
-    public List<ProductoEsp> listarProductosEspecificos(Integer idComercio) {
+    public List<ProductoEsp> listarProductosEspecificosComercio(Integer idComercio) {
         return productoEspRepository.findByComercioId(idComercio);
+    }
+
+    @Override
+    public List<ProductoEsp> listarTodosLosProductosEspecificos() {
+        return productoEspRepository.findAll();
     }
 
     @Override
