@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comentarios/")
+@RequestMapping("/corralito/v1/productos-especificos")
 public class ComentarioController {
 
     @Autowired
@@ -36,7 +36,6 @@ public class ComentarioController {
     }
 
     // Obtener comentarios por producto específico
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TURISTA')")
     @GetMapping("/{idProductoEsp}")
     public ResponseEntity<MensajeResponse> obtenerComentariosPorProductoEspecifico(
             @PathVariable Integer idProductoEsp) {
@@ -78,6 +77,5 @@ public class ComentarioController {
                 .build();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
-
 
 }

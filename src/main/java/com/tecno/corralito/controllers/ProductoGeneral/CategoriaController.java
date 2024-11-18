@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/categorias")
+@RequestMapping("/corralito/v1/categorias")
 public class CategoriaController {
 
     @Autowired
@@ -55,7 +55,7 @@ public class CategoriaController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+
     @GetMapping
     public ResponseEntity<MensajeResponse> listarCategorias() {
         List<CategoriaDto> categorias = iCategoriaService.listarCategorias();
@@ -66,7 +66,7 @@ public class CategoriaController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> obtenerCategoriaPorId(@PathVariable Integer id) {
         CategoriaDto categoria = iCategoriaService.obtenerCategoriaPorId(id);
@@ -77,7 +77,7 @@ public class CategoriaController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+
     @GetMapping("/nombre/{nombreCategoria}")
     public ResponseEntity<MensajeResponse> obtenerCategoriaPorNombre(@PathVariable String nombreCategoria) {
         CategoriaDto categoriaDto = iCategoriaService.obtenerCategoriaPorNombre(nombreCategoria);

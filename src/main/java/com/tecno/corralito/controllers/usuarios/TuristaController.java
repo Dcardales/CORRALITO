@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/turistas")
+@RequestMapping("/corralito/v1/turistas")
 public class TuristaController {
 
 

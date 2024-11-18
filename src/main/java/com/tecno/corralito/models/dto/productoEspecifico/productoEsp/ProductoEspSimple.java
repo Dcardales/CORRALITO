@@ -11,6 +11,7 @@ import lombok.*;
 @Builder
 public class ProductoEspSimple {
 
+    private Integer idProductoEsp;
     private String nombreEspecifico;
     private Double precio;
     private String descripcion;

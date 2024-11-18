@@ -1,12 +1,12 @@
 package com.tecno.corralito.security;
 
-
 import com.tecno.corralito.security.filter.JwtTokenValidator;
 import com.tecno.corralito.services.usuarios.auth.AuthServiceImpl;
 import com.tecno.corralito.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,32 +44,37 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(http -> {
                     // Endpoints públicos
-                    http.requestMatchers("/auth/**").permitAll();
+                    http.requestMatchers("/corralito/v1/auth/**").permitAll();
 
                     // Swagger público
                     http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();
 
-                    // Endpoints de administrador (protegidos)
-                    http.requestMatchers("/api/administradores/**").hasAnyRole("ADMIN");
+                    // Permitir todos los métodos GET excepto los de administradores
+                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/**").permitAll(); // Permitir GET para todos los recursos
+                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/administradores/**").hasRole("ADMIN");
 
-                    http.requestMatchers("/api/turistas/**").hasAnyRole("TURISTA");
+                    // Proteger otros métodos según roles
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
-                    // Endpoints de Categoría (protegidos)
-                    http.requestMatchers("/api/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
-                    // Endpoints de Zonas (protegidos)
-                    http.requestMatchers("/api/zonas/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
 
-                    // Endpoints de Producto (protegidos)
-                    http.requestMatchers("/api/productos/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
 
-                    // Endpoints de Producto Especifico (protegidos)
-                    http.requestMatchers("/api/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "TURISTA");
 
-                    // Endpoints de Comentarios (protegidos)
-                    http.requestMatchers("/api/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
-
-                    // Denegar todos los demás
+                    // Denegar todos los demás accesos
                     http.anyRequest().denyAll();
                 })
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)

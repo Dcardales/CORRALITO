@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/productos")
+@RequestMapping("/corralito/v1/productos")
 public class ProductoController {
 
     @Autowired
@@ -56,7 +56,6 @@ public class ProductoController {
         return ResponseEntity.ok(mensajeResponse);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @GetMapping
     public ResponseEntity<MensajeResponse> listarProductos() {
         List<ProductoDto> productos = iProductoService.listarProductos();
@@ -67,7 +66,6 @@ public class ProductoController {
         return ResponseEntity.ok(mensajeResponse);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @GetMapping("/buscar")
     public ResponseEntity<MensajeResponse> buscarProductoPorNombre(@RequestParam String nombre) {
         ProductoDto producto = iProductoService.buscarProductoPorNombre(nombre);

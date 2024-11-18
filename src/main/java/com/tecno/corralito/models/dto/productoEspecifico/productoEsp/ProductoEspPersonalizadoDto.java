@@ -35,5 +35,4 @@ public class ProductoEspPersonalizadoDto {
 
     private ComercioDto comercio;
 
-
 }

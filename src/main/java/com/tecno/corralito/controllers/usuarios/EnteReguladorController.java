@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/ente-regulador")
+@RequestMapping("/corralito/v1/ente-regulador")
 public class EnteReguladorController {
 
     @Autowired

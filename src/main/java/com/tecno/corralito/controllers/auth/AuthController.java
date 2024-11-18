@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/corralito/v1/auth")
 public class AuthController {
 
     @Autowired
@@ -66,23 +66,5 @@ public class AuthController {
         AuthResponse response = authService.registerComercio(comercioRequest);
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/register-enteRegulador")
-    public ResponseEntity<AuthResponse> registerEnteRegulador(@Valid @RequestBody AuthCreateEnteRequest enteRequest, BindingResult result) {
-        // Verifica si hay errores de validación
-        if (result.hasErrors()) {
-            // Mapea los errores de validación a un formato amigable
-            List<String> errors = result.getFieldErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(new AuthResponse(null, "Errores de validación: " + String.join(", ", errors), null, false));
-        }
-
-        // Llama al servicio si no hay errores de validación
-        AuthResponse response = authService.registerEnteRegulador(enteRequest);
-        return ResponseEntity.ok(response);
-    }
-
 
 }

@@ -9,12 +9,18 @@ import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.entity.usuario.PermissionEntity;
 import com.tecno.corralito.models.entity.usuario.RoleEntity;
 import com.tecno.corralito.models.entity.usuario.UserEntity;
+import com.tecno.corralito.models.repository.productoEspecifico.ComentarioRepository;
+import com.tecno.corralito.models.repository.productoEspecifico.ProductoEspRepository;
 import com.tecno.corralito.models.repository.usuario.PermissionRepository;
 import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ProductoRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ZonaRepository;
 import com.tecno.corralito.models.repository.usuario.RoleRepository;
 import com.tecno.corralito.models.repository.usuario.UserRepository;
+import com.tecno.corralito.models.repository.usuario.tiposUsuarios.AdministradorRepository;
+import com.tecno.corralito.models.repository.usuario.tiposUsuarios.ComercioRepository;
+import com.tecno.corralito.models.repository.usuario.tiposUsuarios.EnteReguladorRepository;
+import com.tecno.corralito.models.repository.usuario.tiposUsuarios.TuristaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,6 +51,7 @@ public class CorralitoApplication {
         private final PermissionRepository permissionRepository;
         private final RoleRepository roleRepository;
 
+
         // Constructor para inyectar dependencias
         public DataInitializer(
                 UserRepository userRepository,
@@ -61,6 +68,7 @@ public class CorralitoApplication {
             this.zonaRepository = zonaRepository;
             this.roleRepository = roleRepository;
             this.permissionRepository = permissionRepository;
+
         }
 
         @Bean

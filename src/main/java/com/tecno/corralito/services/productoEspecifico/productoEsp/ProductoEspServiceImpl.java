@@ -7,6 +7,7 @@ import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.ZonaNotFoundException;
 import com.tecno.corralito.mapper.ProductoEspMapper;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspSimple;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
 import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.entity.productoGeneral.Zona;
@@ -19,10 +20,13 @@ import com.tecno.corralito.models.repository.usuario.UserRepository;
 import com.tecno.corralito.models.repository.usuario.tiposUsuarios.ComercioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoEspServiceImpl implements IProductoEspService {
@@ -52,14 +56,53 @@ public class ProductoEspServiceImpl implements IProductoEspService {
                 .orElseThrow(() -> new ProductoNotFoundException("Producto específico no encontrado"));
     }
 
+
     @Override
     public List<ProductoEsp> listarProductosEspecificosComercio(Integer idComercio) {
         return productoEspRepository.findByComercioId(idComercio);
     }
 
     @Override
-    public List<ProductoEsp> listarTodosLosProductosEspecificos() {
-        return productoEspRepository.findAll();
+    public Page<ProductoEsp> listarProductosPorCategoria(Integer idCategoria, Pageable pageable) {
+        return productoEspRepository.findByCategoria_IdCategoria(idCategoria, pageable);
+    }
+
+    @Override
+    public Page<ProductoEsp> listarProductosPorCategoriaYZona(Integer idCategoria, Integer idZona, Pageable pageable) {
+        return productoEspRepository.findByCategoria_IdCategoriaAndZona_IdZona(idCategoria, idZona,pageable);
+    }
+
+    @Override
+    public List<ProductoEsp> listarProductosMasRecientes() {
+        return productoEspRepository.findAllByOrderByIdProductoEspDesc();
+    }
+
+    @Override
+    public List<ProductoEsp> listarProductosPorMayorPrecio() {
+        return productoEspRepository.findAllByOrderByPrecioDesc();
+    }
+
+    @Override
+    public List<ProductoEsp> listarProductosPorMenorPrecio() {
+        return productoEspRepository.findAllByOrderByPrecioAsc();
+    }
+
+    @Override
+    public Page<ProductoEsp> listarTodosLosProductosEspecificos(Pageable pageable) {
+        return productoEspRepository.findAll( pageable);
+    }
+
+    @Override
+    public List<ProductoEsp> listarProductosPorZona(Integer idZona) {
+        return productoEspRepository.findByZona_IdZona(idZona);
+    }
+
+    @Override
+    public List<ProductoEspSimple> listarProductosPorZonaSimple(Integer idZona) {
+        List<ProductoEsp> productos = listarProductosPorZona(idZona);
+        return productos.stream()
+                .map(productoEspMapper::toProductoEspSimple)
+                .collect(Collectors.toList());
     }
 
     @Override

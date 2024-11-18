@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/zonas")
+@RequestMapping("/corralito/v1/zonas")
 public class ZonaController {
 
     @Autowired
@@ -54,7 +54,7 @@ public class ZonaController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
+
     @GetMapping
     public ResponseEntity<MensajeResponse> listarTodasLasZonas() {
         List<ZonaDto> listaZonas = iZonaService.listarTodas();
@@ -65,7 +65,6 @@ public class ZonaController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('ENTEREGULADOR')")
     @GetMapping("/buscar")
     public ResponseEntity<MensajeResponse> buscarPorNombre(@RequestParam String nombreZona) {
         ZonaDto zona = iZonaService.buscarPorNombre(nombreZona);

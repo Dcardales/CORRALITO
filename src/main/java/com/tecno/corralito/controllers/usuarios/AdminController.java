@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/administradores")
+@RequestMapping("/corralito/v1/administradores")
 public class AdminController {
 
     @Autowired

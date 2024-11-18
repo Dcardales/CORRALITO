@@ -36,6 +36,8 @@ public interface ProductoEspMapper {
     ProductoEspPersonalizadoDto toDto(ProductoEsp productoEsp);
 
     // Mapeo de ProductoEsp a ProductoEspSimple
+    @Mapping(target = "idProductoEsp", source = "idProductoEsp")
+    @Mapping(target = "zona.idZona", source = "zona.idZona")
     @Mapping(target = "nombreEspecifico", source = "nombreEspecifico")
     @Mapping(target = "precio", source = "precio")
     @Mapping(target = "descripcion", source = "descripcion")
