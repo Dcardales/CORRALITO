@@ -2,6 +2,7 @@ package com.tecno.corralito.models.dto.productoEspecifico.productoEsp;
 
 
 
+import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import lombok.*;
 
 @Data
@@ -17,5 +18,6 @@ public class ProductoEspSimple {
     private String descripcion;
     private int valoracionPromedio;
     private String nombreComercio;
+    private Zona zona;
 
 }

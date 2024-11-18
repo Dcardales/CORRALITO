@@ -70,9 +70,9 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.PUT, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
                     http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "COMERCIO");
 
-                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "TURISTA");
-                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "TURISTA");
-                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/productos-especificos/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/comentarios/**").hasAnyRole("ADMIN", "TURISTA");
 
                     // Denegar todos los demás accesos
                     http.anyRequest().denyAll();

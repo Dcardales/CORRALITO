@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/corralito/v1/productos-especificos")
+@RequestMapping("/corralito/v1/comentarios/")
 public class ComentarioController {
 
     @Autowired
