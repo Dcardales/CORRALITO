@@ -12,7 +12,5 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
 
-    List<RoleEntity> findRoleEntitiesByRoleEnumIn(List<String> roleNames);
-
     Optional<RoleEntity> findByRoleEnum(RoleEnum roleEnum);
 }
