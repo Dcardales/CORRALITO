@@ -1,16 +1,17 @@
-package com.tecno.corralito.models.dto.tiposUsuario.enteRegulador;
+package com.tecno.corralito.models.dto.tiposUsuario.administrador;
+
 
 
 import com.tecno.corralito.models.dto.tiposUsuario.usuario.UsuarioDto;
 import com.tecno.corralito.models.entity.enums.TipoIdentificacion;
 import lombok.*;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
-public class EnteReguladorDto {
+public class AdministradorDto {
     private Integer id;
     private String nombre;
     private String apellidos;

@@ -1,17 +1,17 @@
 package com.tecno.corralito.models.dto.tiposUsuario.usuario;
 
 
-import lombok.*;
 
-import java.util.Set;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
-public class UserDto {
+public class UsuarioDto {
     private Long id;
     private String email;
-    private Set<String> perfiles; // Administrador, Turista, Comercio o Ente Regulador
+    private String estado;
 }
+

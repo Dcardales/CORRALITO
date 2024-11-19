@@ -1,6 +1,8 @@
 package com.tecno.corralito.services.usuarios.comercio;
 
 import com.tecno.corralito.models.dto.tiposUsuario.comercio.AuthCreateComercioRequest;
+import com.tecno.corralito.models.dto.tiposUsuario.comercio.ComercioDto;
+import com.tecno.corralito.models.dto.tiposUsuario.comercio.UpdateComercio;
 import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
 import com.tecno.corralito.models.response.auth.AuthResponse;
 import com.tecno.corralito.models.response.usuarios.comercio.ComercioResponse;
@@ -13,6 +15,8 @@ public interface IComercioService {
 
     AuthResponse registerComercio(AuthCreateComercioRequest comercioRequest);
 
+    UpdateComercio getComercioByUserId(Long userId);
+
     ComercioResponse actualizarComercio(Integer id, UpdateComercioRequest comercioRequest);
 
     void eliminarComercio(Integer id);
@@ -22,4 +26,5 @@ public interface IComercioService {
     Comercio obtenerComercioPorId(Integer id);
 
     void restablecerContraseña(Integer comercioId, String nuevaContraseña);
+
 }

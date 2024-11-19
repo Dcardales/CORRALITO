@@ -2,6 +2,7 @@ package com.tecno.corralito.services.usuarios.enteRegulador;
 
 import com.tecno.corralito.models.dto.tiposUsuario.administrador.CreateAdminRequest;
 import com.tecno.corralito.models.dto.tiposUsuario.enteRegulador.AuthCreateEnteRequest;
+import com.tecno.corralito.models.dto.tiposUsuario.enteRegulador.EnteReguladorDto;
 import com.tecno.corralito.models.dto.tiposUsuario.enteRegulador.UpdateEnteRequest;
 import com.tecno.corralito.models.entity.usuario.tiposUsuarios.EnteRegulador;
 import com.tecno.corralito.models.response.auth.AuthResponse;
@@ -14,6 +15,8 @@ public interface IEnteService
 {
 
     AuthResponse registerEnteRegulador(AuthCreateEnteRequest enteRequest);
+
+    EnteReguladorDto getEnteReguladorByUserId(Long userId);
 
     EnteResponse updateEnteRegulador(Integer id, UpdateEnteRequest enteRequest);
 

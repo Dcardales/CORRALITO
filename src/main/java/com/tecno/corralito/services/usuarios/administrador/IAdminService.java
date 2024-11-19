@@ -1,5 +1,6 @@
 package com.tecno.corralito.services.usuarios.administrador;
 
+import com.tecno.corralito.models.dto.tiposUsuario.administrador.AdministradorDto;
 import com.tecno.corralito.models.dto.tiposUsuario.administrador.CreateAdminRequest;
 import com.tecno.corralito.models.dto.tiposUsuario.administrador.UpdateAdminRequest;
 import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Administrador;
@@ -12,6 +13,8 @@ public interface IAdminService {
 
     AuthResponse registerAdministrador(CreateAdminRequest adminRequest);
 
+
+    AdministradorDto getAdministradorByUserId(Long userId);
 
     Administrador updateAdministrador(Integer id, UpdateAdminRequest adminRequest);
 

@@ -4,7 +4,10 @@ package com.tecno.corralito.services.usuarios.turista;
 import com.tecno.corralito.exceptions.NacionalidadNotFoundException;
 import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.UsuarioYaExisteException;
+import com.tecno.corralito.mapper.TuristaMapper;
 import com.tecno.corralito.models.dto.tiposUsuario.turista.AuthCreateTuristaRequest;
+import com.tecno.corralito.models.dto.tiposUsuario.turista.ObtenerTurista;
+import com.tecno.corralito.models.dto.tiposUsuario.turista.TuristaDto;
 import com.tecno.corralito.models.dto.tiposUsuario.turista.TuristaUpdateRequest;
 import com.tecno.corralito.models.entity.enums.Estado;
 import com.tecno.corralito.models.entity.enums.RoleEnum;
@@ -54,6 +57,9 @@ public class TuristaServiceImpl implements ITuristaService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private TuristaMapper turistaMapper;
 
 
 
@@ -117,6 +123,14 @@ public class TuristaServiceImpl implements ITuristaService {
         return new AuthResponse(email, "Turista registrado exitosamente", accessToken, true);
     }
 
+    @Override
+    public ObtenerTurista getTuristaByUserId(Long userId) {
+        Turista turista = turistaRepository.findByUsuario_Id(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turista no encontrado con userId: " + userId));
+
+        // Convertir entidad a DTO usando el mapper
+        return turistaMapper.toObtenerTurista(turista);
+    }
 
 
     @Transactional

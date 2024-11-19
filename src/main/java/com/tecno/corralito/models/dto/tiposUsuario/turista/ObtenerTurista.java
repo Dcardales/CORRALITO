@@ -1,21 +1,21 @@
-package com.tecno.corralito.models.dto.tiposUsuario.enteRegulador;
+package com.tecno.corralito.models.dto.tiposUsuario.turista;
 
 
 import com.tecno.corralito.models.dto.tiposUsuario.usuario.UsuarioDto;
-import com.tecno.corralito.models.entity.enums.TipoIdentificacion;
+import com.tecno.corralito.models.entity.usuario.Nacionalidad;
 import lombok.*;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
-public class EnteReguladorDto {
+public class ObtenerTurista {
     private Integer id;
     private String nombre;
     private String apellidos;
     private String telefono;
-    private TipoIdentificacion tipoIdentificacion;
-    private String identificacion;
+    private Nacionalidad nacionalidad;
     private UsuarioDto usuario;
 }
+

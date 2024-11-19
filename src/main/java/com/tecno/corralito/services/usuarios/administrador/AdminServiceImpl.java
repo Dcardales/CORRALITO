@@ -1,7 +1,10 @@
 package com.tecno.corralito.services.usuarios.administrador;
 
 import com.tecno.corralito.exceptions.AdministradorNotFoundException;
+import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.UsuarioYaExisteException;
+import com.tecno.corralito.mapper.AdministradorMapper;
+import com.tecno.corralito.models.dto.tiposUsuario.administrador.AdministradorDto;
 import com.tecno.corralito.models.dto.tiposUsuario.administrador.CreateAdminRequest;
 import com.tecno.corralito.models.dto.tiposUsuario.administrador.UpdateAdminRequest;
 import com.tecno.corralito.models.entity.enums.Estado;
@@ -41,6 +44,9 @@ public class AdminServiceImpl implements IAdminService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private AdministradorMapper administradorMapper;
 
     @Transactional
     @Override
@@ -91,6 +97,15 @@ public class AdminServiceImpl implements IAdminService {
         String accessToken = jwtUtils.createToken(authentication);
 
         return new AuthResponse(email, "Administrador registrado exitosamente", accessToken, true);
+    }
+
+    @Override
+    public AdministradorDto getAdministradorByUserId(Long userId) {
+        Administrador administrador = administradorRepository.findByUsuario_Id(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrador no encontrado con userId: " + userId));
+
+        // Convertir entidad a DTO usando el mapper
+        return administradorMapper.toAdministradorDto(administrador);
     }
 
     @Transactional

@@ -1,7 +1,10 @@
 package com.tecno.corralito.services.usuarios.comercio;
 
+import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.UsuarioYaExisteException;
+import com.tecno.corralito.mapper.ComercioMapper;
 import com.tecno.corralito.models.dto.tiposUsuario.comercio.AuthCreateComercioRequest;
+import com.tecno.corralito.models.dto.tiposUsuario.comercio.UpdateComercio;
 import com.tecno.corralito.models.entity.enums.Estado;
 import com.tecno.corralito.models.entity.enums.RoleEnum;
 import com.tecno.corralito.models.entity.usuario.RoleEntity;
@@ -42,6 +45,9 @@ public class ComercioServiceImpl implements  IComercioService{
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private ComercioMapper comercioMapper;
 
 
     @Transactional
@@ -105,6 +111,15 @@ public class ComercioServiceImpl implements  IComercioService{
         String accessToken = jwtUtils.createToken(authentication);
 
         return new AuthResponse(email, "Comercio registrado exitosamente", accessToken, true);
+    }
+
+    @Override
+    public UpdateComercio getComercioByUserId(Long userId) {
+        Comercio comercio = comercioRepository.findByUsuario_Id(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comercio no encontrado con userId: " + userId));
+
+        // Usar el mapper para convertir la entidad a DTO
+        return comercioMapper.toUpdateComercio(comercio);
     }
 
 

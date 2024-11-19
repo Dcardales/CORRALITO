@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface EnteReguladorRepository extends JpaRepository<EnteRegulador, Integer> {
     Optional<EnteRegulador> findByIdentificacion(String identificacion);
+    Optional<EnteRegulador> findByUsuario_Id(Long userId);
 }

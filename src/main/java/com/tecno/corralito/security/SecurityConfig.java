@@ -50,10 +50,28 @@ public class SecurityConfig {
                     http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();
 
                     // Permitir todos los métodos GET excepto los de administradores
-                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/**").permitAll(); // Permitir GET para todos los recursos
+                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/corralito/v1/administradores/**").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/turistas/**").hasRole("TURISTA");
+                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/comercio/**").hasRole("COMERCIO");
+                    http.requestMatchers(HttpMethod.GET, "/corralito/v1/ente-regulador/**").hasRole("ENTEREGULADOR");
 
-                    // Proteger otros métodos según roles
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/administradores/**").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/administradores/**").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/administradores/**").hasRole("ADMIN");
+
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/turistas/**").hasRole("TURISTA");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/turistas/**").hasRole("TURISTA");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/turistas/**").hasRole("TURISTA");
+
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/ente-regulador/**").hasRole("ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/ente-regulador/**").hasRole("ENTEREGULADOR");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/ente-regulador/**").hasRole("ENTEREGULADOR");
+
+                    http.requestMatchers(HttpMethod.POST, "/corralito/v1/comercio/**").hasRole("COMERCIO");
+                    http.requestMatchers(HttpMethod.PUT, "/corralito/v1/comercio/**").hasRole("COMERCIO");
+                    http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/comercio/**").hasRole("COMERCIO");
+
                     http.requestMatchers(HttpMethod.POST, "/corralito/v1/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
                     http.requestMatchers(HttpMethod.PUT, "/corralito/v1/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");
                     http.requestMatchers(HttpMethod.DELETE, "/corralito/v1/categorias/**").hasAnyRole("ADMIN", "ENTEREGULADOR");

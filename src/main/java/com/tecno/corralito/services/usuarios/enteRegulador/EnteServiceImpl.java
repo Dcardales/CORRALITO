@@ -1,7 +1,10 @@
 package com.tecno.corralito.services.usuarios.enteRegulador;
 
+import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.UsuarioYaExisteException;
+import com.tecno.corralito.mapper.EnteReguladorMapper;
 import com.tecno.corralito.models.dto.tiposUsuario.enteRegulador.AuthCreateEnteRequest;
+import com.tecno.corralito.models.dto.tiposUsuario.enteRegulador.EnteReguladorDto;
 import com.tecno.corralito.models.dto.tiposUsuario.enteRegulador.UpdateEnteRequest;
 import com.tecno.corralito.models.entity.enums.Estado;
 import com.tecno.corralito.models.entity.enums.RoleEnum;
@@ -50,6 +53,9 @@ public class EnteServiceImpl implements  IEnteService{
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private EnteReguladorMapper enteReguladorMapper;
 
 
     @Transactional
@@ -106,6 +112,15 @@ public class EnteServiceImpl implements  IEnteService{
         String accessToken = jwtUtils.createToken(authentication);
 
         return new AuthResponse(email, "Ente Regulador registrado exitosamente", accessToken, true);
+    }
+
+    @Override
+    public EnteReguladorDto getEnteReguladorByUserId(Long userId) {
+        EnteRegulador enteRegulador = enteReguladorRepository.findByUsuario_Id(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ente Regulador no encontrado con userId: " + userId));
+
+        // Convertir entidad a DTO usando el mapper
+        return enteReguladorMapper.toEnteReguladorDto(enteRegulador);
     }
 
 

@@ -1,5 +1,6 @@
 package com.tecno.corralito.models.entity.usuario;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "Nacionalidad")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Nacionalidad {
 
     @Id
