@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .authorizeRequests(http -> {
                     // Endpoints públicos
                     http.requestMatchers("/corralito/v1/auth/**").permitAll();
+                    http.requestMatchers("/corralito/v1/usuarios/**").permitAll();
 
                     // Swagger público
                     http.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui-custom.html").permitAll();

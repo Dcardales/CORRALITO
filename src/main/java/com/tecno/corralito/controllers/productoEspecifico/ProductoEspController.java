@@ -1,6 +1,7 @@
 package com.tecno.corralito.controllers.productoEspecifico;
 
 import com.tecno.corralito.mapper.ProductoEspMapper;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspConComentariosDto;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspSimple;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +116,13 @@ public class ProductoEspController {
         return ResponseEntity.ok(mensajeResponse);
 
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoEspConComentariosDto> obtenerProductoConComentarios(@PathVariable Integer id) {
+        ProductoEspConComentariosDto productoConComentarios = productoEspService.obtenerProductoConComentarios(id);
+        return ResponseEntity.ok(productoConComentarios);
+    }
+
     @GetMapping("/categoria/{idCategoria}/zona/{idZona}")
     public ResponseEntity<MensajeResponse> listarProductosPorCategoriaYZona(
             @PathVariable Integer idCategoria,
@@ -196,6 +205,14 @@ public class ProductoEspController {
                 .object(productoSimples)
                 .build();
         return ResponseEntity.ok(mensajeResponse);
+    }
+
+    @GetMapping("/{id}/convertir")
+    public ResponseEntity<BigDecimal> convertirPrecio(
+            @PathVariable Integer id,
+            @RequestParam String codigoDivisa) {
+        BigDecimal precioConvertido = productoEspService.convertirPrecio(id, codigoDivisa);
+        return ResponseEntity.ok(precioConvertido);
     }
 
 

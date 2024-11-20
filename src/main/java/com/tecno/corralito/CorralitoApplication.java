@@ -3,24 +3,20 @@ package com.tecno.corralito;
 
 import com.tecno.corralito.models.entity.enums.Estado;
 import com.tecno.corralito.models.entity.enums.RoleEnum;
+import com.tecno.corralito.models.entity.productoEspecifico.Divisa;
 import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.entity.productoGeneral.Producto;
 import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.entity.usuario.PermissionEntity;
 import com.tecno.corralito.models.entity.usuario.RoleEntity;
 import com.tecno.corralito.models.entity.usuario.UserEntity;
-import com.tecno.corralito.models.repository.productoEspecifico.ComentarioRepository;
-import com.tecno.corralito.models.repository.productoEspecifico.ProductoEspRepository;
-import com.tecno.corralito.models.repository.usuario.PermissionRepository;
+import com.tecno.corralito.models.repository.productoEspecifico.DivisaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ProductoRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ZonaRepository;
+import com.tecno.corralito.models.repository.usuario.PermissionRepository;
 import com.tecno.corralito.models.repository.usuario.RoleRepository;
 import com.tecno.corralito.models.repository.usuario.UserRepository;
-import com.tecno.corralito.models.repository.usuario.tiposUsuarios.AdministradorRepository;
-import com.tecno.corralito.models.repository.usuario.tiposUsuarios.ComercioRepository;
-import com.tecno.corralito.models.repository.usuario.tiposUsuarios.EnteReguladorRepository;
-import com.tecno.corralito.models.repository.usuario.tiposUsuarios.TuristaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -50,9 +47,8 @@ public class CorralitoApplication {
         private final ZonaRepository zonaRepository;
         private final PermissionRepository permissionRepository;
         private final RoleRepository roleRepository;
+        private final DivisaRepository divisaRepository;
 
-
-        // Constructor para inyectar dependencias
         public DataInitializer(
                 UserRepository userRepository,
                 PasswordEncoder passwordEncoder,
@@ -60,7 +56,8 @@ public class CorralitoApplication {
                 ProductoRepository productoRepository,
                 ZonaRepository zonaRepository,
                 RoleRepository roleRepository,
-                PermissionRepository permissionRepository) {
+                PermissionRepository permissionRepository,
+                DivisaRepository divisaRepository) {
             this.userRepository = userRepository;
             this.passwordEncoder = passwordEncoder;
             this.categoriaRepository = categoriaRepository;
@@ -68,7 +65,7 @@ public class CorralitoApplication {
             this.zonaRepository = zonaRepository;
             this.roleRepository = roleRepository;
             this.permissionRepository = permissionRepository;
-
+            this.divisaRepository = divisaRepository;
         }
 
         @Bean
@@ -203,7 +200,22 @@ public class CorralitoApplication {
                 productoMojarra.setZona(zonaNorte);
 
                 productoRepository.saveAll(List.of(productoAgua, productoMojarra));
+
+
+                crearDivisasIniciales();
             };
         }
+
+        private void crearDivisasIniciales() {
+            divisaRepository.saveAll(List.of(
+                    new Divisa(null, "USD", "Dólar estadounidense", new BigDecimal("4100.00"), LocalDate.now()),
+                    new Divisa(null, "EUR", "Euro", new BigDecimal("4500.00"), LocalDate.now()),
+                    new Divisa(null, "GBP", "Libra esterlina", new BigDecimal("5200.00"), LocalDate.now()),
+                    new Divisa(null, "CHF", "Franco suizo", new BigDecimal("4600.00"), LocalDate.now()),
+                    new Divisa(null, "JPY", "Yen japonés", new BigDecimal("30.00"), LocalDate.now())
+            ));
+        }
+
     }
+
 }

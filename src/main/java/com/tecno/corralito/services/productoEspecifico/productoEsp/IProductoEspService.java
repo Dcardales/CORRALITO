@@ -1,12 +1,15 @@
 package com.tecno.corralito.services.productoEspecifico.productoEsp;
 
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspConComentariosDto;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspSimple;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface IProductoEspService {
 
@@ -35,4 +38,11 @@ public interface IProductoEspService {
     List<ProductoEsp> listarProductosPorZona(Integer idZona);
 
     List<ProductoEspSimple> listarProductosPorZonaSimple(Integer idZona);
+
+    BigDecimal convertirPrecio(Integer idProducto, String codigoDivisa);
+
+    ProductoEspConComentariosDto obtenerProductoConComentarios(Integer idProductoEsp);
+
+    Optional<ProductoEsp> getById(Integer idProductoEsp);
 }
+

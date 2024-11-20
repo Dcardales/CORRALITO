@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Data
@@ -34,4 +35,13 @@ public class Divisa {
     private LocalDate fechaActualizacion; // Fecha de la última actualización.
 
 
+    public BigDecimal convertir(BigDecimal precioEnCOP) {
+        if (precioEnCOP == null || precioEnCOP.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("El precio debe ser mayor que cero.");
+        }
+        // Realiza la conversión usando la tasa de conversión
+        return precioEnCOP.divide(tasaConversion, 2, RoundingMode.HALF_UP);
+
+
+    }
 }

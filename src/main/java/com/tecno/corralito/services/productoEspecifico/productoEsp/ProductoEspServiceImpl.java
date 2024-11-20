@@ -6,13 +6,18 @@ import com.tecno.corralito.exceptions.ProductoNotFoundException;
 import com.tecno.corralito.exceptions.ResourceNotFoundException;
 import com.tecno.corralito.exceptions.ZonaNotFoundException;
 import com.tecno.corralito.mapper.ProductoEspMapper;
+import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspConComentariosDto;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspPersonalizadoDto;
 import com.tecno.corralito.models.dto.productoEspecifico.productoEsp.ProductoEspSimple;
+import com.tecno.corralito.models.entity.productoEspecifico.Comentario;
+import com.tecno.corralito.models.entity.productoEspecifico.Divisa;
 import com.tecno.corralito.models.entity.productoEspecifico.ProductoEsp;
 import com.tecno.corralito.models.entity.productoGeneral.Categoria;
 import com.tecno.corralito.models.entity.productoGeneral.Zona;
 import com.tecno.corralito.models.entity.usuario.UserEntity;
 import com.tecno.corralito.models.entity.usuario.tiposUsuarios.Comercio;
+import com.tecno.corralito.models.repository.productoEspecifico.ComentarioRepository;
+import com.tecno.corralito.models.repository.productoEspecifico.DivisaRepository;
 import com.tecno.corralito.models.repository.productoEspecifico.ProductoEspRepository;
 import com.tecno.corralito.models.repository.productoGeneral.CategoriaRepository;
 import com.tecno.corralito.models.repository.productoGeneral.ZonaRepository;
@@ -25,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +51,15 @@ public class ProductoEspServiceImpl implements IProductoEspService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+    @Autowired
+    private DivisaRepository divisaRepository;
 
     @Autowired
     private ProductoEspMapper productoEspMapper;
+
+    @Autowired
+    private ComentarioRepository comentarioRepository;
+
 
 
     @Override
@@ -169,12 +181,36 @@ public class ProductoEspServiceImpl implements IProductoEspService {
         productoExistente.setEstado(dto.getEstado());
         productoExistente.setZona(zona);
         productoExistente.setCategoria(categoria);
-        productoExistente.setComercio(comercio); // Asignar automáticamente el comercio
+        productoExistente.setComercio(comercio);
 
         // Guardar el producto actualizado en la base de datos
         return productoEspRepository.save(productoExistente);
     }
 
+    @Override
+    public BigDecimal convertirPrecio(Integer idProducto, String codigoDivisa) {
+        ProductoEsp producto = productoEspRepository.findById(idProducto)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
+        Divisa divisa = divisaRepository.findByCodigo(codigoDivisa)
+                .orElseThrow(() -> new IllegalArgumentException("Divisa no encontrada"));
+
+        return divisa.convertir(producto.getPrecio());
+    }
+
+    @Override
+    public ProductoEspConComentariosDto obtenerProductoConComentarios(Integer idProductoEsp) {
+        // 1. Consultar el ProductoEsp desde MySQL
+        ProductoEsp productoEsp = productoEspRepository.findById(idProductoEsp)
+                .orElseThrow(() -> new ResourceNotFoundException("ProductoEsp no encontrado"));
+
+        // 2. Consultar los comentarios desde MongoDB
+        List<Comentario> comentarios = comentarioRepository.findByIdProductoEsp(String.valueOf(idProductoEsp));
+
+        // 3. Combinar y retornar el DTO
+        return new ProductoEspConComentariosDto(productoEsp, comentarios);
+    }
 }
+
+
 
